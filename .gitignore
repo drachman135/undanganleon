@@ -1,0 +1,12 @@
+# OS Metadata Cache
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs & temp files
+*.log
+.system_generated/
+.gemini/
+mcp_actions/
+.vscode/
+.idea/

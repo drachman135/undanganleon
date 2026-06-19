@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin — Pengaturan Acara ⚙️</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Supabase Core + Config & Route Guard -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/middleware/authGuard.js"></script>
+    
+    <!-- Unified Dashboard CSS -->
+    <link rel="stylesheet" href="../css/dashboard.css">
+    
+    <!-- Extra settings-specific style adjustments -->
+    <style>
+        .skeleton-container {
+            padding: 20px 0;
+        }
+        .skeleton-box-item {
+            height: 280px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+        .preset-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="dashboard-content">
+        <!-- 1. LOADING SKELETON -->
+        <div id="settings-skeleton" class="skeleton-container">
+            <div class="skeleton" style="height: 1.5rem; width: 40%; margin-bottom: 24px;"></div>
+            <div class="form-grid">
+                <div class="skeleton-box-item">
+                    <div class="skeleton" style="height: 1.2rem; width: 60%; margin-bottom: 24px;"></div>
+                    <div class="skeleton" style="height: 2.5rem; width: 100%; margin-bottom: 16px;"></div>
+                    <div class="skeleton" style="height: 2.5rem; width: 100%;"></div>
+                </div>
+                <div class="skeleton-box-item">
+                    <div class="skeleton" style="height: 1.2rem; width: 60%; margin-bottom: 24px;"></div>
+                    <div class="skeleton" style="height: 2.5rem; width: 100%; margin-bottom: 16px;"></div>
+                    <div class="skeleton" style="height: 2.5rem; width: 100%;"></div>
+                </div>
+                <div class="skeleton-box-item" style="grid-column: 1 / -1; height: 350px;">
+                    <div class="skeleton" style="height: 1.2rem; width: 30%; margin-bottom: 24px;"></div>
+                    <div class="skeleton" style="height: 2.5rem; width: 100%; margin-bottom: 16px;"></div>
+                    <div class="skeleton" style="height: 5rem; width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. FORM INTERFACES -->
+        <form id="settings-cms-form" style="display: none;" novalidate>
+            <div class="form-grid">
+                
+                <!-- SECTION 1: COVER SCREEN -->
+                <div class="section-box">
+                    <h2 class="section-title">🖼️ Layar Pembuka (Cover)</h2>
+                    
+                    <div class="form-group">
+                        <label for="settings-cover-title" class="form-label">Judul Utama</label>
+                        <input type="text" id="settings-cover-title" class="form-input" placeholder="Contoh: Kiriman Ulang Tahun Spesial">
+                        <span class="error-msg" id="settings-cover-title-error"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settings-cover-subtitle" class="form-label">Subjudul (Italic)</label>
+                        <input type="text" id="settings-cover-subtitle" class="form-input" placeholder="Contoh: Telah Tiba Untukmu">
+                        <span class="error-msg" id="settings-cover-subtitle-error"></span>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: HERO SECTION -->
+                <div class="section-box">
+                    <h2 class="section-title">🧒 Profil & Hero Banner</h2>
+                    
+                    <div class="form-group">
+                        <label for="settings-child-name" class="form-label">Nama Anak (Huruf Kapital)</label>
+                        <input type="text" id="settings-child-name" class="form-input" placeholder="Contoh: ALFATH" required>
+                        <span class="error-msg" id="settings-child-name-error"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settings-child-age" class="form-label">Usia Ulang Tahun (Angka Positif)</label>
+                        <input type="number" id="settings-child-age" class="form-input" placeholder="Contoh: 2" min="1" required>
+                        <span class="error-msg" id="settings-child-age-error"></span>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="settings-hero-description" class="form-label">Deskripsi Subheadline Hero</label>
+                        <textarea id="settings-hero-description" rows="2" class="form-input" placeholder="Tulis pesan ajakan pembuka untuk tamu..."></textarea>
+                        <span class="error-msg" id="settings-hero-description-error"></span>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: EVENT INFORMATION -->
+                <div class="section-box full-width">
+                    <h2 class="section-title">📅 Detail Pelaksanaan Acara</h2>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+                        <div class="form-group">
+                            <label for="settings-event-date" class="form-label">Tanggal Acara</label>
+                            <input type="date" id="settings-event-date" class="form-input" required>
+                            <span class="error-msg" id="settings-event-date-error"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="settings-start-time" class="form-label">Waktu Mulai</label>
+                            <input type="text" id="settings-start-time" class="form-input" placeholder="Contoh: 15:00" required>
+                            <span class="error-msg" id="settings-start-time-error"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="settings-end-time" class="form-label">Waktu Selesai</label>
+                            <input type="text" id="settings-end-time" class="form-input" placeholder="Contoh: Selesai atau 18:00" required>
+                            <span class="error-msg" id="settings-end-time-error"></span>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 12px;">
+                        <div class="form-group">
+                            <label for="settings-location-name" class="form-label">Nama Tempat / Gedung</label>
+                            <input type="text" id="settings-location-name" class="form-input" placeholder="Contoh: Kediaman Utama Keluarga" required>
+                            <span class="error-msg" id="settings-location-name-error"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="settings-google-maps-url" class="form-label">URL Google Maps (Iframe/Navigasi)</label>
+                            <input type="url" id="settings-google-maps-url" class="form-input" placeholder="https://maps.google.com/..." required>
+                            <span class="error-msg" id="settings-google-maps-url-error"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 12px; margin-bottom: 0;">
+                        <label for="settings-full-address" class="form-label">Alamat Lengkap (Ditampilkan pada Kartu)</label>
+                        <textarea id="settings-full-address" rows="3" class="form-input" placeholder="Nama jalan, nomor rumah, RT/RW, kecamatan, kota..." required></textarea>
+                        <span class="error-msg" id="settings-full-address-error"></span>
+                    </div>
+                </div>
+
+                <!-- SECTION 4: CONTACT & RSVP INFORMATION -->
+                <div class="section-box">
+                    <h2 class="section-title">📱 Kontak Integrasi RSVP</h2>
+                    
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="settings-whatsapp-number" class="form-label">Nomor WhatsApp Admin (Kode Negara 62)</label>
+                        <input type="text" id="settings-whatsapp-number" class="form-input" placeholder="Contoh: 628123456789" required>
+                        <span class="drop-subtext" style="display: block; margin-top: 4px; color: var(--slate); font-size: 0.75rem;">
+                            Gunakan angka saja tanpa tanda + atau spasi (misalnya: 6281234567890).
+                        </span>
+                        <span class="error-msg" id="settings-whatsapp-number-error"></span>
+                    </div>
+                </div>
+
+                <!-- SECTION 5: MUSIC SETTINGS -->
+                <div class="section-box">
+                    <h2 class="section-title">🎵 Musik Latar & Layar Memuat</h2>
+                    
+                    <div class="form-group switch-group">
+                        <label for="settings-music-enabled" class="form-label" style="margin-bottom: 0;">Aktifkan Background Music</label>
+                        <label class="switch">
+                            <input type="checkbox" id="settings-music-enabled">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 12px;">
+                        <label for="settings-music-volume" class="form-label">Volume Musik Default</label>
+                        <div class="range-wrapper">
+                            <input type="range" id="settings-music-volume" min="0" max="1" step="0.05" value="0.4">
+                            <span class="range-val" id="settings-music-volume-val">40%</span>
+                        </div>
+                        <span class="error-msg" id="settings-music-volume-error"></span>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px;">
+                        <div class="form-group">
+                            <label for="settings-background-music-url" class="form-label">URL File Audio (MP3/M4A)</label>
+                            <input type="text" id="settings-background-music-url" class="form-input" placeholder="Tautan audio Supabase..." readonly disabled>
+                            <span class="drop-subtext" style="font-size: 0.75rem; color: var(--slate); margin-top: 4px;">Ubah file di modul musik.</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="settings-loading-duration" class="form-label">Durasi Loading (milidetik)</label>
+                            <input type="number" id="settings-loading-duration" class="form-input" min="2000" max="4000" step="100" required>
+                            <span class="drop-subtext" style="font-size: 0.75rem; color: var(--slate); margin-top: 4px;">Batas: 2000ms s/d 4000ms.</span>
+                            <span class="error-msg" id="settings-loading-duration-error"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 6: THEME SETTINGS -->
+                <div class="section-box full-width">
+                    <h2 class="section-title">🎨 Tema Warna Undangan</h2>
+                    
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="settings-theme-color" class="form-label">Warna Utama Aksen (Akan menimpa warna oranye)</label>
+                        <div class="preset-container">
+                            <input type="color" id="settings-theme-color" class="form-input" style="width: 60px; height: 40px; padding: 2px; cursor: pointer; border-radius: 6px;">
+                            
+                            <div class="theme-presets">
+                                <span class="theme-preset-bubble" data-color="#F97316" style="background-color: #F97316;" title="Orange (Default)"></span>
+                                <span class="theme-preset-bubble" data-color="#3B82F6" style="background-color: #3B82F6;" title="Blue"></span>
+                                <span class="theme-preset-bubble" data-color="#10B981" style="background-color: #10B981;" title="Emerald Green"></span>
+                                <span class="theme-preset-bubble" data-color="#FBBF24" style="background-color: #FBBF24;" title="Gold"></span>
+                                <span class="theme-preset-bubble" data-color="#8B5CF6" style="background-color: #8B5CF6;" title="Purple"></span>
+                            </div>
+                        </div>
+                        <span class="error-msg" id="settings-theme-color-error"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Save Actions -->
+            <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
+                <button type="submit" id="btn-save-settings" class="btn btn-primary" style="padding: 14px 40px;">
+                    Simpan Konfigurasi
+                </button>
+            </div>
+        </form>
+        
+        <!-- Unsaved Banner Notification -->
+        <div id="unsaved-changes-banner" class="unsaved-banner">
+            <div class="unsaved-banner-text">
+                <span>⚠️</span>
+                <span>Perubahan belum disimpan</span>
+            </div>
+            <button type="submit" form="settings-cms-form" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.85rem;">
+                Simpan Perubahan
+            </button>
+        </div>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div class="toast" id="toast">
+        <span class="toast-icon" id="toast-icon">✓</span>
+        <span class="toast-message" id="toast-message">Pesan notifikasi</span>
+    </div>
+
+    <!-- Scripts Layout & Security -->
+    <script src="../js/services/authService.js"></script>
+    <script src="../js/models/settingsModel.js"></script>
+    <script src="../js/repositories/settingsRepository.js"></script>
+    <script src="../js/services/settingsService.js"></script>
+    <script src="../js/components/dashboardShell.js"></script>
+</body>
+
+</html>

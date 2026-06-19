@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin — Hero Image 🖼️</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Supabase Core + Config & Route Guard -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/middleware/authGuard.js"></script>
+    
+    <!-- Unified Dashboard CSS -->
+    <link rel="stylesheet" href="../css/dashboard.css">
+    
+    <style>
+        .skeleton-box-item {
+            height: 360px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 24px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="dashboard-content">
+        <!-- 1. LOADING SKELETON -->
+        <div id="hero-skeleton" style="padding: 20px 0;">
+            <div class="skeleton" style="height: 1.5rem; width: 35%; margin-bottom: 24px;"></div>
+            <div class="hero-grid">
+                <div class="skeleton-box-item">
+                    <div class="skeleton" style="height: 1.2rem; width: 60%; margin-bottom: 24px;"></div>
+                    <div class="skeleton" style="height: 220px; width: 100%; border-radius: var(--radius-md);"></div>
+                </div>
+                <div class="skeleton-box-item" style="height: 380px;">
+                    <div class="skeleton" style="height: 1.2rem; width: 60%; margin-bottom: 24px;"></div>
+                    <div class="skeleton" style="height: 180px; width: 100%; border-radius: var(--radius-md); margin-bottom: 16px;"></div>
+                    <div class="skeleton" style="height: 2.5rem; width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. HERO CMS PANEL -->
+        <div id="hero-cms-panel" class="hero-grid" style="display: none;">
+            
+            <!-- Left side: Drop Zone Upload Area -->
+            <div class="section-box">
+                <h2 class="section-title">📤 Unggah Gambar Banner</h2>
+                <p style="color: var(--slate); font-size: 0.9rem; margin-bottom: 20px;">
+                    Seret dan letakkan gambar Anda di bawah ini, atau klik area di bawah untuk memilih file dari komputer Anda.
+                </p>
+                
+                <div class="hero-drop-zone" id="hero-drop-zone">
+                    <span class="hero-drop-icon">🖼️</span>
+                    <p class="hero-drop-title">Pilih File Gambar Hero</p>
+                    <p class="hero-drop-desc">Mendukung format JPG, JPEG, PNG, dan WEBP (Maksimal 5MB)</p>
+                    <input type="file" id="hero-file-input" accept="image/jpeg,image/png,image/webp" style="display: none;">
+                </div>
+                
+                <!-- File selection details badge -->
+                <div class="hero-file-info-badge" id="hero-file-info">
+                    <span class="hero-file-name" id="hero-file-name-label">nama_gambar.png</span>
+                    <button type="button" class="hero-file-delete" id="btn-delete-file-preview" title="Hapus Pratinjau">×</button>
+                </div>
+                
+                <!-- Progress upload indicator bar -->
+                <div class="hero-progress-container" id="hero-progress-container">
+                    <div class="hero-progress-fill" id="hero-progress-fill"></div>
+                </div>
+                
+                <div style="margin-top: 24px; padding: 14px; background: rgba(251, 191, 36, 0.05); border-left: 3px solid var(--gold); border-radius: 4px; font-size: 0.8rem; color: var(--slate); line-height: 1.5;">
+                    💡 <strong>Rekomendasi Format:</strong> Untuk menjaga kualitas visual di berbagai layar, disarankan menggunakan gambar berorientasi lanskap atau persegi dengan fokus objek di tengah.
+                </div>
+            </div>
+            
+            <!-- Right side: Live Preview & Action Buttons -->
+            <div class="hero-preview-box">
+                <h2 class="section-title">👁️ Pratinjau Aktif</h2>
+                
+                <!-- Preview Canvas -->
+                <div id="hero-preview-container">
+                    <!-- Dynamic preview rendered here -->
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px; width: 100%;">
+                    <button type="button" id="btn-save-hero" class="btn btn-primary" style="width: 100%;">
+                        Simpan Hero Image
+                    </button>
+                    <div style="display: flex; gap: 10px; width: 100%;">
+                        <button type="button" id="btn-cancel-hero" class="btn btn-secondary" style="flex: 1; display: none;">
+                            Batal
+                        </button>
+                        <button type="button" id="btn-delete-hero" class="btn btn-secondary" style="flex: 1; border-color: rgba(239, 68, 68, 0.2); color: #FCA5A5;">
+                            Hapus Gambar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Sticky Changes Banner notification -->
+        <div id="unsaved-changes-banner" class="unsaved-banner">
+            <div class="unsaved-banner-text">
+                <span>⚠️</span>
+                <span>Gambar terpilih belum disimpan ke database</span>
+            </div>
+            <button type="button" id="btn-save-hero-banner" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.85rem;">
+                Simpan Perubahan
+            </button>
+        </div>
+    </div>
+
+    <!-- Notification Alert Toaster -->
+    <div class="toast" id="toast">
+        <span class="toast-icon" id="toast-icon">✓</span>
+        <span class="toast-message" id="toast-message">Pesan notifikasi</span>
+    </div>
+
+    <!-- Layout, API and Services Scripts -->
+    <script src="../js/services/authService.js"></script>
+    <script src="../js/services/storageService.js"></script>
+    <script src="../js/components/heroCms.js"></script>
+    <script src="../js/services/heroService.js"></script>
+    <script src="../js/components/dashboardShell.js"></script>
+    
+    <script>
+        // Bind the button in sticky banner to trigger save in service
+        document.addEventListener('DOMContentLoaded', () => {
+            const stickySaveBtn = document.getElementById('btn-save-hero-banner');
+            if (stickySaveBtn) {
+                stickySaveBtn.addEventListener('click', () => {
+                    const saveBtn = document.getElementById('btn-save-hero');
+                    if (saveBtn) saveBtn.click();
+                });
+            }
+            
+            // Delete badge cancel button trigger delete
+            const btnDeletePreview = document.getElementById('btn-delete-file-preview');
+            if (btnDeletePreview) {
+                btnDeletePreview.addEventListener('click', () => {
+                    const deleteBtn = document.getElementById('btn-delete-hero');
+                    if (deleteBtn) deleteBtn.click();
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

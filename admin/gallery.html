@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin — Gallery 📸</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Supabase Core + Config & Route Guard -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/middleware/authGuard.js"></script>
+    
+    <!-- Unified Dashboard CSS -->
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+
+<body>
+    <div id="dashboard-content">
+        <div class="placeholder-container">
+            <span class="placeholder-icon">📸</span>
+            <h2 class="placeholder-title">Kelola Galeri Foto</h2>
+            <p class="placeholder-desc">Unggah foto-foto kenangan, ubah urutan tampil (sort order), dan tambahkan caption/judul foto pada bagian galeri kenangan.</p>
+            <span class="placeholder-badge">Segera Hadir / Coming Soon</span>
+        </div>
+    </div>
+
+    <!-- Layout & Dynamic details bindings -->
+    <script src="../js/services/authService.js"></script>
+    <script src="../js/components/dashboardShell.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kiriman Spesial — Alfath Genap Dua Tahun 🚛</title>
+    <meta name="description"
+        content="Sebuah kiriman ulang tahun spesial telah tiba untukmu. Buka undanganmu untuk bergabung di Pesta Ulang Tahun milik Alfath.">
+    <meta property="og:title" content="Kiriman Ulang Tahun Spesial Telah Tiba 🚛">
+    <meta property="og:description"
+        content="Kamu telah menerima kiriman yang sangat spesial. Buka dan temukan apa yang ada di dalamnya.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚛</text></svg>">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/supabase-db.js"></script>
+</head>
+
+<body>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!--  PRELOADER · Elegant initial database loader      -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div id="preloader" class="preloader-active">
+        <div class="preloader-content">
+            <div class="preloader-spinner"></div>
+            <p class="preloader-text">Menyiapkan Undangan Spesial...</p>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!--  STAGE 1 · CINEMATIC INTRO — Road & Sky Scene  -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div id="stage-intro" class="stage active">
+
+        <!-- Sky -->
+        <div class="sky">
+            <div class="stars"></div>
+            <div class="sun"></div>
+            <div class="cloud cloud-1"></div>
+            <div class="cloud cloud-2"></div>
+            <div class="cloud cloud-3"></div>
+        </div>
+
+        <!-- Road -->
+        <div class="road">
+            <div class="road-line road-line-1"></div>
+            <div class="road-line road-line-2"></div>
+            <div class="road-line road-line-3"></div>
+        </div>
+
+        <!-- Scenery -->
+        <div class="scenery">
+            <div class="tree tree-1"></div>
+            <div class="tree tree-2"></div>
+            <div class="tree tree-3"></div>
+            <div class="tree tree-4"></div>
+            <div class="building building-1"></div>
+            <div class="building building-2"></div>
+        </div>
+
+        <!-- The TRUCK -->
+        <div id="truck-vehicle" class="truck-vehicle">
+            <svg class="truck-svg" viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg"
+                aria-label="Container truck arriving">
+
+                <!-- Trailer / Container -->
+                <rect x="10" y="50" width="290" height="115" rx="8" fill="#1E3A5F" stroke="#0F172A" stroke-width="2" />
+                <!-- Container ribs -->
+                <line x1="70" y1="50" x2="70" y2="165" stroke="#0F172A" stroke-width="1.5" opacity="0.4" />
+                <line x1="130" y1="50" x2="130" y2="165" stroke="#0F172A" stroke-width="1.5" opacity="0.4" />
+                <line x1="190" y1="50" x2="190" y2="165" stroke="#0F172A" stroke-width="1.5" opacity="0.4" />
+                <line x1="250" y1="50" x2="250" y2="165" stroke="#0F172A" stroke-width="1.5" opacity="0.4" />
+                <!-- Container highlight stripe -->
+                <rect x="10" y="50" width="290" height="18" rx="4" fill="#60A5FA" opacity="0.25" />
+                <!-- Container logo -->
+                <rect x="100" y="90" width="100" height="36" rx="6" fill="#F97316" opacity="0.9" />
+                <text x="150" y="114" text-anchor="middle" font-family="Poppins,sans-serif" font-weight="800"
+                    font-size="16" fill="white">ALFATH</text>
+
+                <!-- Cab / Tractor -->
+                <rect x="300" y="70" width="140" height="95" rx="10" fill="#F97316" />
+                <!-- Cab roof -->
+                <rect x="310" y="55" width="110" height="22" rx="6" fill="#EA6500" />
+                <!-- Cab highlight -->
+                <rect x="300" y="70" width="140" height="12" rx="4" fill="rgba(255,255,255,0.15)" />
+
+                <!-- Windshield -->
+                <rect x="395" y="75" width="36" height="45" rx="6" fill="#BFDBFE" opacity="0.9" />
+                <line x1="413" y1="75" x2="413" y2="120" stroke="#93C5FD" stroke-width="1" opacity="0.6" />
+
+                <!-- Side window -->
+                <rect x="340" y="78" width="48" height="36" rx="5" fill="#BFDBFE" opacity="0.9" />
+
+                <!-- Headlight -->
+                <ellipse cx="438" cy="130" rx="8" ry="6" fill="#FEF08A" />
+                <ellipse cx="438" cy="130" rx="5" ry="4" fill="#FBBF24" />
+
+                <!-- Door handle -->
+                <rect x="360" y="122" width="18" height="4" rx="2" fill="#EA6500" />
+
+                <!-- Exhaust pipe -->
+                <rect x="302" y="42" width="8" height="28" rx="3" fill="#334155" />
+                <ellipse cx="306" cy="42" rx="5" ry="3" fill="#475569" />
+
+                <!-- Smoke puffs -->
+                <circle class="smoke smoke-1" cx="306" cy="32" r="6" fill="rgba(148,163,184,0.6)" />
+                <circle class="smoke smoke-2" cx="312" cy="20" r="9" fill="rgba(148,163,184,0.4)" />
+                <circle class="smoke smoke-3" cx="302" cy="10" r="7" fill="rgba(148,163,184,0.3)" />
+
+                <!-- Hitch connection -->
+                <rect x="295" y="138" width="12" height="8" rx="2" fill="#334155" />
+
+                <!-- Rear trailer wheels -->
+                <circle cx="60" cy="174" r="22" fill="#1E293B" stroke="#334155" stroke-width="3" />
+                <circle cx="60" cy="174" r="11" fill="#475569" />
+                <circle cx="60" cy="174" r="4" fill="#94A3B8" />
+
+                <circle cx="120" cy="174" r="22" fill="#1E293B" stroke="#334155" stroke-width="3" />
+                <circle cx="120" cy="174" r="11" fill="#475569" />
+                <circle cx="120" cy="174" r="4" fill="#94A3B8" />
+
+                <circle cx="215" cy="174" r="22" fill="#1E293B" stroke="#334155" stroke-width="3" />
+                <circle cx="215" cy="174" r="11" fill="#475569" />
+                <circle cx="215" cy="174" r="4" fill="#94A3B8" />
+
+                <!-- Drive axle wheels -->
+                <circle cx="340" cy="174" r="22" fill="#1E293B" stroke="#334155" stroke-width="3" />
+                <circle cx="340" cy="174" r="11" fill="#475569" />
+                <circle cx="340" cy="174" r="4" fill="#94A3B8" />
+
+                <circle cx="400" cy="174" r="22" fill="#1E293B" stroke="#334155" stroke-width="3" />
+                <circle cx="400" cy="174" r="11" fill="#475569" />
+                <circle cx="400" cy="174" r="4" fill="#94A3B8" />
+
+                <!-- Brake lights -->
+                <rect x="10" y="88" width="10" height="20" rx="3" fill="#EF4444" />
+                <rect x="10" y="115" width="10" height="20" rx="3" fill="#DC2626" />
+            </svg>
+        </div>
+
+        <!-- Road dust / motion lines -->
+        <div class="motion-lines">
+            <span></span><span></span><span></span><span></span><span></span>
+        </div>
+
+        <!-- Intro headline (fades in after truck arrives) -->
+        <div id="intro-headline" class="intro-headline">
+            <span class="headline-badge">📦 Kiriman Spesial</span>
+            <h1>Kiriman Ulang Tahun Spesial<br><em>Telah Tiba Untukmu</em></h1>
+        </div>
+
+        <!-- Skip intro -->
+        <button id="btn-skip-intro" class="btn-skip" aria-label="Lewati animasi intro">Lewati intro</button>
+
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!--  STAGE 2 · PACKAGE REVEAL — Crate dropped at door -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div id="stage-package" class="stage">
+
+        <div class="pkg-scene">
+
+            <!-- Floating sparkles -->
+            <div class="sparkles" aria-hidden="true">
+                <span class="sp sp-1">✦</span>
+                <span class="sp sp-2">✦</span>
+                <span class="sp sp-3">★</span>
+                <span class="sp sp-4">✦</span>
+                <span class="sp sp-5">✨</span>
+                <span class="sp sp-6">✦</span>
+            </div>
+
+            <!-- Package / crate -->
+            <div id="package-box" class="package-box">
+                <div class="pkg-lid">
+                    <div class="pkg-lid-face"></div>
+                    <div class="pkg-lid-side"></div>
+                </div>
+                <div class="pkg-body">
+                    <div class="pkg-stripe pkg-stripe-v"></div>
+                    <div class="pkg-stripe pkg-stripe-h"></div>
+                    <div class="pkg-ribbon-knot"></div>
+                    <div class="pkg-label">
+                        <p class="pkg-label-to">Kepada:</p>
+                        <p id="pkg-guest-name" class="pkg-label-name">Teman</p>
+                        <p class="pkg-label-from">Dari: Alfath 🚛</p>
+                    </div>
+                </div>
+                <!-- Shadow -->
+                <div class="pkg-shadow"></div>
+            </div>
+
+            <!-- Text below box -->
+            <div class="pkg-copy">
+                <p class="pkg-tagline">Kirimanmu telah tiba!</p>
+                <p class="pkg-sub">Ada sesuatu yang spesial menantimu di dalam…</p>
+            </div>
+
+            <!-- CTA -->
+            <button id="btn-open-package" class="btn-cta" aria-label="Buka paket kiriman">
+                <span class="btn-icon">📦</span>
+                <span class="btn-text">Buka Kiriman</span>
+                <span class="btn-arrow">→</span>
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!--  STAGE 3 · ENVELOPE REVEAL                       -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div id="stage-envelope" class="stage">
+
+        <div class="env-scene">
+
+            <!-- Glowing aura behind envelope -->
+            <div class="env-glow" aria-hidden="true"></div>
+
+            <!-- Floating petals / confetti -->
+            <div class="confetti-field" aria-hidden="true">
+                <span class="cf cf-1">🎉</span>
+                <span class="cf cf-2">⭐</span>
+                <span class="cf cf-3">🎊</span>
+                <span class="cf cf-4">✨</span>
+                <span class="cf cf-5">🌟</span>
+                <span class="cf cf-6">🎉</span>
+                <span class="cf cf-7">⭐</span>
+                <span class="cf cf-8">🎊</span>
+            </div>
+
+            <!-- The Envelope -->
+            <div id="the-envelope" class="envelope-wrap" aria-label="Birthday invitation envelope">
+
+                <!-- Envelope back (background layer) -->
+                <div class="env-back"></div>
+
+                <!-- Invitation card (slides up from the pocket) -->
+                <div class="inv-card" id="inv-card">
+                    <div class="inv-card-inner">
+                        <div class="inv-top-badge">
+                            <span>🎂</span>
+                        </div>
+                        <p class="inv-label">Undangan Ulang Tahun</p>
+                        <h2 class="inv-name" id="inv-guest-name">Teman</h2>
+                        <p class="inv-tagline">Kamu diundang ke<br><strong>Pesta Ulang Tahun!</strong></p>
+                    </div>
+                </div>
+
+                <!-- Envelope front pocket (sandwiching the card) -->
+                <div class="env-front">
+                    <!-- Left triangle -->
+                    <div class="env-left-flap"></div>
+                    <!-- Right triangle -->
+                    <div class="env-right-flap"></div>
+                    <!-- Bottom triangle -->
+                    <div class="env-bottom-flap"></div>
+                </div>
+
+                <!-- Envelope flap (top, opens upward) -->
+                <div class="env-flap" id="env-flap">
+                    <div class="env-flap-inner"></div>
+                    <!-- Wax seal -->
+                    <div class="env-seal" id="env-seal">
+                        <span class="seal-emoji">🚛</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Envelope CTA area -->
+            <div class="env-cta-area" id="env-cta-area">
+                <p class="env-hint" id="env-hint">Ketuk untuk membuka undanganmu</p>
+                <button id="btn-open-envelope" class="btn-cta btn-cta-gold"
+                    aria-label="Buka amplop untuk membaca undanganmu">
+                    <span class="btn-icon">✉️</span>
+                    <span class="btn-text">Buka Undangan</span>
+                    <span class="btn-arrow">→</span>
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!--  STAGE 4 · TRANSITION CARD — "Entering" screen   -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div id="stage-enter" class="stage">
+        <div class="enter-scene">
+            <div class="enter-truck-icon" aria-hidden="true">🚛</div>
+            <h2 class="enter-title">Memuat undanganmu…</h2>
+            <div class="enter-progress-track">
+                <div class="enter-progress-bar" id="enter-progress-bar"></div>
+            </div>
+            <p class="enter-sub">Tunggu sebentar, pesta Alfath hampir siap!</p>
+        </div>
+    </div>
+    
+    <!-- ══════════════════════════════════════════════════ -->
+    <!--  MAIN CONTENT · HERO SECTION                       -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <main id="main-invitation" class="main-content">
+        <section id="hero-section" class="hero">
+            <!-- Background ambient glows -->
+            <div class="hero-bg-glow orange-glow"></div>
+            <div class="hero-bg-glow gold-glow"></div>
+            
+            <div class="hero-container">
+                <!-- Text Column -->
+                <div class="hero-text-col fade-in-up-delay-1">
+                    <h1 class="hero-headline">
+                        <span class="hl-name">ALFATH</span>
+                        <span class="hl-sub">KINI BERUSIA</span>
+                        <span class="hl-number">DUA</span>
+                        <span class="hl-year">TAHUN</span>
+                    </h1>
+
+                    <div class="hero-road-divider">
+                        <div class="road-dashed-line"></div>
+                    </div>
+
+                    <p class="hero-subheadline">
+                        Mari bergabung dalam petualangan ulang tahun yang spesial.
+                    </p>
+                </div>
+
+                <!-- Visual Column (Image + Orbiting Centerpiece 2) -->
+                <div class="hero-visual-col fade-in-up-delay-2">
+                    <div class="hero-image-wrap">
+                        <img src="images/hero_cake.png" alt="Kue Ulang Tahun Alfath" class="hero-image">
+                        <!-- Border frame accent -->
+                        <div class="image-frame-accent"></div>
+                        <!-- Orbiting 3D Centerpiece Number 2 -->
+                        <div class="orbiting-number-two" aria-label="Berusia 2">2</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- ══════════════════════════════════════════════════ -->
+        <!--  SECTION 1 · COUNTDOWN                             -->
+        <!-- ══════════════════════════════════════════════════ -->
+        <section id="countdown-section" class="countdown-sec scroll-reveal">
+            <div class="sec-glow sec-orange-glow"></div>
+            
+            <div class="sec-header">
+                <h2 class="sec-title">Menuju Hari Bahagia</h2>
+                <p class="sec-subtitle">Hitung mundur menuju perayaan ulang tahun Alfath.</p>
+            </div>
+
+            <div class="countdown-grid">
+                <!-- Days Card -->
+                <div class="countdown-card">
+                    <div class="countdown-number" id="timer-days">00</div>
+                    <div class="countdown-label">Hari</div>
+                </div>
+                <!-- Hours Card -->
+                <div class="countdown-card">
+                    <div class="countdown-number" id="timer-hours">00</div>
+                    <div class="countdown-label">Jam</div>
+                </div>
+                <!-- Minutes Card -->
+                <div class="countdown-card">
+                    <div class="countdown-number" id="timer-minutes">00</div>
+                    <div class="countdown-label">Menit</div>
+                </div>
+                <!-- Seconds Card -->
+                <div class="countdown-card">
+                    <div class="countdown-number" id="timer-seconds">00</div>
+                    <div class="countdown-label">Detik</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════ -->
+        <!--  SECTION 2 · DETAIL ACARA                         -->
+        <!-- ══════════════════════════════════════════════════ -->
+        <section id="details-section" class="details-sec scroll-reveal">
+            <div class="sec-glow sec-gold-glow"></div>
+
+            <div class="sec-header">
+                <h2 class="sec-title">Detail Acara</h2>
+            </div>
+
+            <div class="details-container">
+                <!-- Tanggal Card -->
+                <div class="detail-card">
+                    <div class="detail-icon-wrap">
+                        <svg class="detail-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="4" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="8" cy="14" r="1" fill="currentColor"/>
+                            <circle cx="12" cy="14" r="1" fill="currentColor"/>
+                            <circle cx="16" cy="14" r="1" fill="currentColor"/>
+                            <circle cx="8" cy="18" r="1" fill="currentColor"/>
+                            <circle cx="12" cy="18" r="1" fill="currentColor"/>
+                            <circle cx="16" cy="18" r="1" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h3 class="detail-label">Hari & Tanggal</h3>
+                    <p class="detail-value">Minggu, 12 Juli 2026</p>
+                </div>
+
+                <!-- Waktu Card -->
+                <div class="detail-card">
+                    <div class="detail-icon-wrap">
+                        <svg class="detail-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <polyline points="12 6 12 12 16 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="detail-label">Waktu Acara</h3>
+                    <p class="detail-value">15:00 WIB - Selesai</p>
+                </div>
+
+                <!-- Lokasi Card -->
+                <div class="detail-card">
+                    <div class="detail-icon-wrap">
+                        <svg class="detail-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="detail-label">Tempat Pelaksanaan</h3>
+                    <p class="detail-value text-multiline">Kediaman Alfath<br>Jl. Melati No. 24, Jakarta Selatan</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════ -->
+        <!--  SECTION 3 · GALERI FOTO                           -->
+        <!-- ══════════════════════════════════════════════════ -->
+        <section id="gallery-section" class="gallery-sec scroll-reveal">
+            <div class="sec-glow sec-orange-glow"></div>
+            
+            <div class="sec-header">
+                <h2 class="sec-title">Galeri Kenangan</h2>
+                <p class="sec-subtitle">Perjalanan tumbuh kembang Alfath dari waktu ke waktu.</p>
+            </div>
+
+            <div class="gallery-grid">
+                <!-- Gallery Item 1 -->
+                <div class="gallery-item" data-src="images/gallery_1.png" data-caption="Belajar dan bermain dengan penuh keceriaan.">
+                    <div class="gallery-img-container">
+                        <img src="images/gallery_1.png" alt="Alfath bermain" class="gallery-img" loading="lazy">
+                        <div class="gallery-overlay">
+                            <span class="gallery-zoom-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    <line x1="11" y1="8" x2="11" y2="14"></line>
+                                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                                </svg>
+                            </span>
+                            <h4 class="gallery-item-title">Dunia Penuh Eksplorasi</h4>
+                            <p class="gallery-item-desc">Tumbuh dengan ceria</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 2 -->
+                <div class="gallery-item" data-src="images/gallery_2.png" data-caption="Momen berharga di ulang tahun yang pertama.">
+                    <div class="gallery-img-container">
+                        <img src="images/gallery_2.png" alt="Alfath ulang tahun ke-1" class="gallery-img" loading="lazy">
+                        <div class="gallery-overlay">
+                            <span class="gallery-zoom-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    <line x1="11" y1="8" x2="11" y2="14"></line>
+                                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                                </svg>
+                            </span>
+                            <h4 class="gallery-item-title">Satu Tahun Pertama</h4>
+                            <p class="gallery-item-desc">Langkah kecil berharga</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 3 -->
+                <div class="gallery-item" data-src="images/gallery_3.png" data-caption="Harapan dan kebahagiaan di setiap tiupan lilin.">
+                    <div class="gallery-img-container">
+                        <img src="images/gallery_3.png" alt="Alfath meniup lilin" class="gallery-img" loading="lazy">
+                        <div class="gallery-overlay">
+                            <span class="gallery-zoom-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    <line x1="11" y1="8" x2="11" y2="14"></line>
+                                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                                </svg>
+                            </span>
+                            <h4 class="gallery-item-title">Lilin Harapan</h4>
+                            <p class="gallery-item-desc">Kebahagiaan tak terhingga</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Lightbox Modal -->
+        <div id="lightbox" class="lightbox-modal" aria-hidden="true" role="dialog">
+            <button class="lightbox-close" aria-label="Tutup galeri">&times;</button>
+            <div class="lightbox-content">
+                <img id="lightbox-img" src="" alt="Galeri Ulang Tahun Alfath">
+                <p id="lightbox-caption" class="lightbox-caption"></p>
+            </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════ -->
+        <!--  SECTION 4 · LOKASI ACARA                          -->
+        <!-- ══════════════════════════════════════════════════ -->
+        <section id="location-section" class="location-sec scroll-reveal">
+            <div class="sec-glow sec-gold-glow"></div>
+
+            <div class="sec-header">
+                <h2 class="sec-title">Lokasi Acara</h2>
+                <p class="sec-subtitle">Temukan lokasi perayaan dengan mudah.</p>
+            </div>
+
+            <div class="location-container">
+                <!-- Details Card Column -->
+                <div class="location-info-col">
+                    <div class="location-card">
+                        <div class="location-badge">
+                            <span class="badge-icon">📍</span>
+                            <span class="badge-text">Alamat Acara</span>
+                        </div>
+                        <h3 class="location-venue-name">Kediaman Alfath</h3>
+                        <p class="location-address">
+                            Jl. Melati No. 24, Cilandak Barat, Kec. Cilandak, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12430
+                        </p>
+                        
+                        <div class="location-divider"></div>
+                        
+                        <div class="location-guide">
+                            <h4 class="guide-title">Petunjuk Acara</h4>
+                            <p class="guide-text">Acara diadakan di kediaman utama keluarga. Anda dapat memarkir kendaraan di area yang telah disediakan oleh petugas.</p>
+                        </div>
+                        
+                        <a href="https://maps.google.com/?q=-6.2661555,106.7972412" target="_blank" rel="noopener noreferrer" class="btn-cta btn-location">
+                            <span class="btn-icon">🗺️</span>
+                            <span class="btn-text">Lihat Lokasi</span>
+                            <span class="btn-arrow">→</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Embedded Map Column -->
+                <div class="location-map-col">
+                    <div class="map-wrapper">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.012543981881!2d106.79466627585501!3d-6.266155493722513!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f1a265ab757f%3A0x401576d14fed4d0!2sJl.%20Melati%2C%20Cilandak%20Bar.%2C%20Kec.%20Cilandak%2C%20Kota%20Jakarta%20Selatan%2C%20Daerah%20Khusus%20Ibukota%20Jakarta!5e0!3m2!1sid!2sid!4v1718873000000!5m2!1sid!2sid" 
+                            width="100%" 
+                            height="100%" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade"
+                            title="Peta Lokasi Acara Alfath">
+                        </iframe>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════ -->
+        <!--  SECTION 5 · KONFIRMASI KEHADIRAN (RSVP)           -->
+        <!-- ══════════════════════════════════════════════════ -->
+        <section id="rsvp-section" class="rsvp-sec scroll-reveal">
+            <div class="sec-glow sec-orange-glow"></div>
+
+            <div class="sec-header">
+                <h2 class="sec-title">Konfirmasi Kehadiran</h2>
+                <p class="sec-subtitle">Kami akan senang menyambut kehadiran Anda.</p>
+            </div>
+
+            <div class="rsvp-container">
+                <form id="rsvp-form" class="rsvp-card" novalidate>
+                    <!-- Nama Field -->
+                    <div class="form-group">
+                        <label for="rsvp-name" class="form-label">Nama Lengkap</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">👤</span>
+                            <input 
+                                type="text" 
+                                id="rsvp-name" 
+                                name="name" 
+                                class="form-input" 
+                                placeholder="Masukkan nama Anda" 
+                                required
+                                autocomplete="name"
+                            >
+                        </div>
+                        <span class="error-msg" id="name-error">Nama tidak boleh kosong</span>
+                    </div>
+
+                    <!-- Jumlah Tamu Field -->
+                    <div class="form-group">
+                        <label for="rsvp-guests" class="form-label">Jumlah Tamu</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">👥</span>
+                            <select id="rsvp-guests" name="guests" class="form-select" required>
+                                <option value="" disabled selected>Pilih jumlah tamu</option>
+                                <option value="1 Orang">1 Orang</option>
+                                <option value="2 Orang">2 Orang</option>
+                                <option value="3 Orang">3 Orang</option>
+                                <option value="4 Orang">4 Orang</option>
+                                <option value="5 Orang atau lebih">5 Orang atau lebih</option>
+                            </select>
+                        </div>
+                        <span class="error-msg" id="guests-error">Silakan pilih jumlah tamu</span>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="btn-submit-rsvp" class="btn-cta btn-rsvp">
+                        <span class="btn-icon">💌</span>
+                        <span class="btn-text">Konfirmasi Kehadiran</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════ -->
+        <!--  FOOTER SECTION                                    -->
+        <!-- ══════════════════════════════════════════════════ -->
+        <footer id="footer-section" class="footer">
+            <p class="footer-copy">© 2026 Alfath Birthday Invitation</p>
+        </footer>
+
+        <!-- Floating Music Control -->
+        <button id="floating-music-btn" class="floating-music-btn" aria-label="Matikan Musik" aria-pressed="false">
+            <span class="music-icon">🔊</span>
+        </button>
+    </main>
+
+
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>
