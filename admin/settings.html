@@ -56,6 +56,11 @@
                     <div class="skeleton" style="height: 2.5rem; width: 100%; margin-bottom: 16px;"></div>
                     <div class="skeleton" style="height: 2.5rem; width: 100%;"></div>
                 </div>
+                <div class="skeleton-box-item">
+                    <div class="skeleton" style="height: 1.2rem; width: 60%; margin-bottom: 24px;"></div>
+                    <div class="skeleton" style="height: 2.5rem; width: 100%; margin-bottom: 16px;"></div>
+                    <div class="skeleton" style="height: 2.5rem; width: 100%;"></div>
+                </div>
                 <div class="skeleton-box-item" style="grid-column: 1 / -1; height: 350px;">
                     <div class="skeleton" style="height: 1.2rem; width: 30%; margin-bottom: 24px;"></div>
                     <div class="skeleton" style="height: 2.5rem; width: 100%; margin-bottom: 16px;"></div>
@@ -105,6 +110,43 @@
                         <label for="settings-hero-description" class="form-label">Deskripsi Subheadline Hero</label>
                         <textarea id="settings-hero-description" rows="2" class="form-input" placeholder="Tulis pesan ajakan pembuka untuk tamu..."></textarea>
                         <span class="error-msg" id="settings-hero-description-error"></span>
+                    </div>
+                </div>
+
+                <!-- SECTION 2.5: PROFILE SECTION CMS -->
+                <div class="section-box">
+                    <h2 class="section-title">👦 Profile Section</h2>
+                    
+                    <div class="form-group switch-group">
+                        <label for="settings-profile-enabled" class="form-label" style="margin-bottom: 0;">Enable Profile Section</label>
+                        <label class="switch">
+                            <input type="checkbox" id="settings-profile-enabled">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settings-profile-full-name" class="form-label">Full Name</label>
+                        <input type="text" id="settings-profile-full-name" class="form-input" placeholder="Nama Lengkap Anak">
+                        <span class="error-msg" id="settings-profile-full-name-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settings-profile-birth-place" class="form-label">Birth Place</label>
+                        <input type="text" id="settings-profile-birth-place" class="form-input" placeholder="Tempat Lahir Anak">
+                        <span class="error-msg" id="settings-profile-birth-place-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="settings-profile-birth-date" class="form-label">Birth Date</label>
+                        <input type="date" id="settings-profile-birth-date" class="form-input">
+                        <span class="error-msg" id="settings-profile-birth-date-error"></span>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="settings-profile-description" class="form-label">Description</label>
+                        <textarea id="settings-profile-description" rows="2" class="form-input" placeholder="Tuliskan biografi singkat atau deskripsi profil anak..."></textarea>
+                        <span class="error-msg" id="settings-profile-description-error"></span>
                     </div>
                 </div>
 

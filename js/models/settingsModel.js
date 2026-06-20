@@ -31,6 +31,13 @@ class InvitationSettings {
         this.background_music_url = data.background_music_url || null;
         this.loading_duration = typeof data.loading_duration === 'number' ? data.loading_duration : 3000;
         
+        // Profile CMS Section
+        this.profile_enabled = data.profile_enabled !== undefined ? !!data.profile_enabled : false;
+        this.profile_full_name = data.profile_full_name || '';
+        this.profile_birth_place = data.profile_birth_place || '';
+        this.profile_birth_date = data.profile_birth_date || '';
+        this.profile_description = data.profile_description || '';
+
         // Theme
         this.theme_color = data.theme_color || '#F97316';
     }
@@ -85,6 +92,13 @@ const SettingsValidator = {
             errors.whatsapp_number = 'Nomor WhatsApp wajib diisi';
         } else if (!/^\d+$/.test(String(settings.whatsapp_number).trim())) {
             errors.whatsapp_number = 'Nomor WhatsApp hanya boleh berisi angka';
+        }
+
+        // profile_full_name: Required if profile_enabled is true
+        if (settings.profile_enabled) {
+            if (!settings.profile_full_name || settings.profile_full_name.trim() === '') {
+                errors.profile_full_name = 'Nama lengkap profil wajib diisi';
+            }
         }
 
         return {

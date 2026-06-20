@@ -35,7 +35,12 @@ class SettingsService {
             music_volume_val: 'settings-music-volume-val',
             background_music_url: 'settings-background-music-url',
             loading_duration: 'settings-loading-duration',
-            theme_color: 'settings-theme-color'
+            theme_color: 'settings-theme-color',
+            profile_enabled: 'settings-profile-enabled',
+            profile_full_name: 'settings-profile-full-name',
+            profile_birth_place: 'settings-profile-birth-place',
+            profile_birth_date: 'settings-profile-birth-date',
+            profile_description: 'settings-profile-description'
         };
     }
 
@@ -94,7 +99,7 @@ class SettingsService {
             const el = document.getElementById(elementId);
             if (!el) return;
 
-            if (key === 'music_enabled') {
+            if (key === 'music_enabled' || key === 'profile_enabled') {
                 el.checked = !!settings[key];
             } else if (key === 'music_volume') {
                 el.value = settings[key];
@@ -121,7 +126,7 @@ class SettingsService {
             const el = document.getElementById(elementId);
             if (!el) return;
 
-            if (key === 'music_enabled') {
+            if (key === 'music_enabled' || key === 'profile_enabled') {
                 values[key] = el.checked;
             } else if (key === 'music_volume') {
                 values[key] = parseFloat(el.value);
@@ -215,7 +220,8 @@ class SettingsService {
             'cover_title', 'cover_subtitle', 'child_name', 'child_age', 
             'hero_description', 'event_date', 'start_time', 'end_time', 
             'location_name', 'full_address', 'google_maps_url', 'whatsapp_number', 
-            'music_enabled', 'music_volume', 'loading_duration', 'theme_color', 'background_music_url'
+            'music_enabled', 'music_volume', 'loading_duration', 'theme_color', 'background_music_url',
+            'profile_enabled', 'profile_full_name', 'profile_birth_place', 'profile_birth_date', 'profile_description'
         ];
 
         for (const key of keysToCompare) {

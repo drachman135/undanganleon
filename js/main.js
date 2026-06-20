@@ -367,6 +367,35 @@ function renderDynamicContent() {
 
             bgAudio.load();
         }
+
+        // Update Profile Section CMS settings
+        const profileSec = document.getElementById('profile-section');
+        if (profileSec) {
+            if (settings.profile_enabled) {
+                profileSec.style.display = 'flex'; // show the section
+                
+                // Populate elements
+                const nameDisplay = document.getElementById('profile-display-name');
+                if (nameDisplay) nameDisplay.textContent = settings.profile_full_name || '';
+
+                const placeDisplay = document.getElementById('profile-display-place');
+                if (placeDisplay) placeDisplay.textContent = settings.profile_birth_place || '';
+
+                const dateDisplay = document.getElementById('profile-display-date');
+                if (dateDisplay) {
+                    if (settings.profile_birth_date) {
+                        dateDisplay.textContent = formatIndonesianDate(settings.profile_birth_date);
+                    } else {
+                        dateDisplay.textContent = '-';
+                    }
+                }
+
+                const descDisplay = document.getElementById('profile-display-desc');
+                if (descDisplay) descDisplay.textContent = settings.profile_description || '';
+            } else {
+                profileSec.style.display = 'none'; // hide the section
+            }
+        }
     }
 
     // 3. Load dynamic gallery images

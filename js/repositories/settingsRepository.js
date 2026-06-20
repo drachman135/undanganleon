@@ -57,6 +57,11 @@ const SettingsRepository = {
             theme_color: settings.theme_color,
             start_time: settings.start_time,
             end_time: settings.end_time,
+            profile_enabled: settings.profile_enabled,
+            profile_full_name: settings.profile_full_name,
+            profile_birth_place: settings.profile_birth_place,
+            profile_birth_date: settings.profile_birth_date || null,
+            profile_description: settings.profile_description,
             updated_at: new Date().toISOString()
         };
 
