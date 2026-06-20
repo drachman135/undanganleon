@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin — Manajemen RSVP 💌</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Supabase Core + Config & Route Guard -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/middleware/authGuard.js"></script>
+    
+    <!-- Unified Dashboard CSS -->
+    <link rel="stylesheet" href="../css/dashboard.css">
+    
+    <style>
+        /* Custom styles for RSVP management */
+        .action-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .search-wrapper {
+            position: relative;
+            max-width: 320px;
+            width: 100%;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--slate);
+            font-size: 0.95rem;
+            pointer-events: none;
+        }
+        
+        .search-input {
+            padding-left: 38px !important;
+        }
+        
+        /* Table Layout Styling */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        
+        th {
+            background-color: rgba(15, 23, 42, 0.4);
+            border-bottom: 1px solid var(--border-color);
+            color: var(--slate);
+            font-weight: 600;
+            padding: 16px 20px;
+            font-family: 'Poppins', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--white);
+            vertical-align: middle;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover td {
+            background-color: rgba(255, 255, 255, 0.01);
+        }
+        
+        .message-cell {
+            max-width: 250px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--slate);
+            font-size: 0.85rem;
+        }
+        
+        /* Badges status */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .badge-hadir {
+            background-color: rgba(16, 185, 129, 0.12);
+            color: var(--green);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+        .badge-tidak_hadir {
+            background-color: rgba(239, 68, 68, 0.12);
+            color: var(--red);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+        }
+        
+        .btn-action-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            color: var(--slate);
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-action-icon:hover {
+            background-color: rgba(255, 255, 255, 0.06);
+            color: var(--white);
+        }
+        
+        .btn-action-icon.btn-delete:hover {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #FCA5A5;
+        }
+        
+        /* Mobile Card list view layout */
+        .mobile-card-list {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .mobile-rsvp-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mobile-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        
+        .mobile-guest-name {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--white);
+        }
+        
+        .mobile-card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .mobile-card-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .mobile-row-label {
+            font-size: 0.7rem;
+            color: var(--slate);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        
+        .mobile-card-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+            margin-top: 4px;
+        }
+        
+        /* Responsive break logic */
+        @media (max-width: 768px) {
+            .table-responsive {
+                display: none;
+            }
+            .mobile-card-list {
+                display: flex;
+            }
+        }
+        
+        /* Modal Window Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(11, 15, 25, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            padding: 20px;
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .modal-window {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.show .modal-window {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1.15rem;
+            color: var(--white);
+        }
+        
+        .btn-modal-close {
+            background: none;
+            border: none;
+            color: var(--slate);
+            font-size: 1.5rem;
+            cursor: pointer;
+            line-height: 1;
+            transition: var(--transition);
+        }
+        
+        .btn-modal-close:hover {
+            color: var(--white);
+        }
+        
+        .modal-body {
+            padding: 24px;
+        }
+        
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            background-color: rgba(15, 23, 42, 0.2);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* Analytics Panel Styles */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 992px) {
+            .analytics-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 600px) {
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .analytics-card {
+            background-color: rgba(15, 23, 42, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 250px;
+        }
+        .analytics-card.highlight-card {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
+        }
+        .analytics-card-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--slate);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+            width: 100%;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 180px;
+            height: 180px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .chart-center-text {
+            position: absolute;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--white);
+            text-align: center;
+        }
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: var(--slate);
+        }
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .total-attendees-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .total-attendees-num {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 3.5rem;
+            color: var(--green);
+            line-height: 1;
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+        }
+        .total-attendees-unit {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--slate);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+        
+        /* Bar chart column styling */
+        .chart-bar-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            height: 100%;
+            width: 45px;
+        }
+        .chart-bar-fill {
+            width: 100%;
+            border-radius: 6px 6px 0 0;
+            transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .chart-bar-val {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: var(--white);
+            margin-bottom: 4px;
+            font-family: monospace;
+        }
+        .chart-bar-label {
+            font-size: 0.75rem;
+            color: var(--slate);
+            margin-top: 8px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* Export expandable panel styles */
+        .export-expandable-panel {
+            display: none;
+            margin-bottom: 24px;
+        }
+        
+        .export-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        
+        @media (max-width: 768px) {
+            .export-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .select-wrapper-custom::after {
+            content: "▼";
+            font-size: 0.65rem;
+            color: var(--slate);
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        /* Pagination styles */
+        .pagination-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .pagination-info {
+            font-size: 0.85rem;
+            color: var(--slate);
+        }
+        .pagination-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-pagination {
+            padding: 6px 12px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--white);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-pagination:hover:not(:disabled) {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: var(--slate);
+        }
+        .btn-pagination:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .btn-pagination.active {
+            background-color: var(--orange);
+            border-color: var(--orange);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="dashboard-content">
+        <!-- SECTION 1: RSVP STATISTICS -->
+        <div class="stats-grid" id="rsvp-stats-panel" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Total RSVP</span>
+                    <span class="card-icon">💌</span>
+                </div>
+                <div class="card-value" id="stats-total-rsvp">-</div>
+                <div class="card-desc">Konfirmasi masuk dari tamu</div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Total Hadir</span>
+                    <span class="card-icon">🟢</span>
+                </div>
+                <div class="card-value" id="stats-total-hadir" style="color: var(--green);">-</div>
+                <div class="card-desc">Tamu menyatakan akan hadir</div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Total Absen</span>
+                    <span class="card-icon">🔴</span>
+                </div>
+                <div class="card-value" id="stats-total-tidak-hadir" style="color: var(--red);">-</div>
+                <div class="card-desc">Tamu menyatakan tidak hadir</div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Kapasitas Tamu</span>
+                    <span class="card-icon">👥</span>
+                </div>
+                <div class="card-value" id="stats-guests-attending" style="color: var(--gold);">-</div>
+                <div class="card-desc">Akumulasi jumlah kursi hadir</div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Aktivitas Terbaru</span>
+                    <span class="card-icon">⏱️</span>
+                </div>
+                <div class="card-value" id="stats-latest-rsvp" style="font-size: 1.1rem; line-height: 1.4; padding-top: 4px;">-</div>
+                <div class="card-desc" id="stats-latest-desc">Belum ada RSVP masuk</div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: ANALYTICS PANEL -->
+        <div class="section-box" id="rsvp-analytics-panel" style="margin-bottom: 24px;">
+            <h2 class="section-title">📊 Analisis Konfirmasi Kehadiran</h2>
+            <div class="analytics-grid">
+                <!-- Donut Chart Card -->
+                <div class="analytics-card">
+                    <h3 class="analytics-card-title">Rasio Kehadiran</h3>
+                    <div class="chart-container">
+                        <svg id="chart-ratio" viewBox="0 0 100 100" width="100%" height="100%">
+                            <!-- Circular background and filled stroke dynamic elements -->
+                        </svg>
+                        <div class="chart-center-text" id="chart-ratio-percentage">-</div>
+                    </div>
+                    <div class="chart-legend" id="chart-ratio-legend">
+                        <!-- Legend items injected dynamically -->
+                    </div>
+                </div>
+                
+                <!-- Bar Chart Card -->
+                <div class="analytics-card">
+                    <h3 class="analytics-card-title">Distribusi Respon</h3>
+                    <div class="chart-container" style="display: flex; align-items: flex-end; justify-content: space-around; padding-bottom: 10px; width: 100%;">
+                        <div id="chart-distribution" style="display: flex; align-items: flex-end; justify-content: space-around; width: 100%; height: 100%; min-height: 140px;">
+                            <!-- Dynamic columns -->
+                        </div>
+                    </div>
+                    <div class="chart-legend">
+                        <div class="legend-item"><span class="legend-dot" style="background-color: var(--green);"></span> Hadir</div>
+                        <div class="legend-item"><span class="legend-dot" style="background-color: var(--red);"></span> Absen</div>
+                    </div>
+                </div>
+                
+                <!-- Total Attendees Stat Callout -->
+                <div class="analytics-card highlight-card">
+                    <h3 class="analytics-card-title">Total Kapasitas Kursi</h3>
+                    <div class="total-attendees-display">
+                        <span class="total-attendees-num" id="analytics-total-attendees">-</span>
+                        <span class="total-attendees-unit">Orang</span>
+                    </div>
+                    <p class="analytics-desc" style="color: var(--slate); font-size: 0.85rem; margin-top: 16px; text-align: center; line-height: 1.4;">
+                        Jumlah akumulatif porsi/kursi (guest_count) dari tamu yang terkonfirmasi Hadir.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTION TOOLBAR -->
+        <div class="action-header">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="input-search-rsvp" class="form-input search-input" placeholder="Cari nama atau pesan...">
+            </div>
+            
+            <div class="filter-controls-group" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+                <!-- Filter Status -->
+                <div class="select-wrapper-custom" style="position: relative;">
+                    <select id="filter-attendance" class="form-input" style="padding-right: 32px; width: 150px; background-color: rgba(15, 23, 42, 0.6);">
+                        <option value="all">Semua Status</option>
+                        <option value="hadir">Hadir</option>
+                        <option value="tidak_hadir">Tidak Hadir</option>
+                    </select>
+                </div>
+
+                <!-- Sort Order -->
+                <div class="select-wrapper-custom" style="position: relative;">
+                    <select id="sort-rsvp" class="form-input" style="padding-right: 32px; width: 170px; background-color: rgba(15, 23, 42, 0.6);">
+                        <option value="newest">Terbaru</option>
+                        <option value="oldest">Terlama</option>
+                        <option value="name_asc">Nama Tamu A-Z</option>
+                        <option value="count_desc">Tamu Terbanyak</option>
+                        <option value="count_asc">Tamu Tersedikit</option>
+                    </select>
+                </div>
+
+                <button type="button" class="btn btn-secondary" id="btn-toggle-export-panel">
+                    📤 Ekspor RSVP
+                </button>
+            </div>
+        </div>
+
+        <!-- EXPANDABLE EXPORT PANEL -->
+        <div class="section-box export-expandable-panel" id="export-expandable-panel">
+            <h2 class="section-title">📤 Ekspor Data RSVP</h2>
+            <div class="export-grid">
+                <!-- Select Format -->
+                <div class="form-group">
+                    <label class="form-label" style="margin-bottom: 8px; display: block;">Pilih Format Berkas</label>
+                    <div class="radio-selector-group" style="display: flex; gap: 24px; margin-top: 10px;">
+                        <label class="radio-label-container" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--white); font-size: 0.9rem;">
+                            <input type="radio" name="export-format" value="xlsx" checked style="width: auto; cursor: pointer; height: auto;">
+                            Microsoft Excel (.xlsx)
+                        </label>
+                        <label class="radio-label-container" style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--white); font-size: 0.9rem;">
+                            <input type="radio" name="export-format" value="csv" style="width: auto; cursor: pointer; height: auto;">
+                            Text CSV (.csv)
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Select Filter -->
+                <div class="form-group">
+                    <label for="export-filter" class="form-label" style="margin-bottom: 8px; display: block;">Data yang Diekspor</label>
+                    <select id="export-filter" class="form-input" style="background-color: rgba(15, 23, 42, 0.6); color: var(--white); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 14px;">
+                        <option value="all">Semua RSVP (Hadir & Tidak Hadir)</option>
+                        <option value="hadir">Hanya RSVP Hadir</option>
+                        <option value="tidak_hadir">Hanya RSVP Tidak Hadir</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+                <button type="button" class="btn btn-secondary" id="btn-cancel-export" style="padding: 10px 20px;">
+                    Batal
+                </button>
+                <button type="button" class="btn btn-primary" id="btn-process-export" style="padding: 10px 24px;">
+                    Unduh Berkas
+                </button>
+            </div>
+        </div>
+
+        <!-- SECTION 3: RSVP LIST -->
+        <div class="section-box">
+            <h2 class="section-title">📋 Respon Konfirmasi Kehadiran</h2>
+            
+            <!-- Skeleton Loader -->
+            <div id="rsvp-skeleton-loader" style="padding: 10px 0;">
+                <div class="skeleton" style="height: 2.8rem; width: 100%; margin-bottom: 12px;"></div>
+                <div class="skeleton" style="height: 3.5rem; width: 100%; margin-bottom: 8px;"></div>
+                <div class="skeleton" style="height: 3.5rem; width: 100%; margin-bottom: 8px;"></div>
+                <div class="skeleton" style="height: 3.5rem; width: 100%; margin-bottom: 8px;"></div>
+                <div class="skeleton" style="height: 3.5rem; width: 100%;"></div>
+            </div>
+            
+            <!-- Desktop Layout Table -->
+            <div class="table-responsive" id="rsvp-desktop-container" style="display: none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama Tamu</th>
+                            <th>Status Kehadiran</th>
+                            <th>Jumlah Tamu</th>
+                            <th>Pesan Ucapan</th>
+                            <th>Tanggal Kirim</th>
+                            <th style="text-align: right; width: 120px;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rsvp-table-body">
+                        <!-- Table rows injected dynamically -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Mobile Layout Card List -->
+            <div class="mobile-card-list" id="rsvp-mobile-container" style="display: none;">
+                <!-- Mobile rsvp cards injected dynamically -->
+            </div>
+            
+            <!-- Empty state -->
+            <div class="placeholder-container" id="rsvp-empty-state" style="display: none;">
+                <span class="placeholder-icon">💌</span>
+                <h2 class="placeholder-title">Belum Ada RSVP Terdaftar</h2>
+                <p class="placeholder-desc">Saat ini belum ada tamu yang melakukan konfirmasi kehadiran melalui undangan digital.</p>
+            </div>
+
+            <!-- Pagination Toolbar -->
+            <div class="pagination-container" id="rsvp-pagination-panel" style="display: none;">
+                <div class="pagination-info" id="pagination-info-text">
+                    Menampilkan 0 - 0 dari 0 data
+                </div>
+                <div class="pagination-buttons" id="pagination-buttons-container">
+                    <!-- Buttons injected dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL POPUP: DETAIL VIEW -->
+    <div class="modal-overlay" id="rsvp-detail-modal">
+        <div class="modal-window" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Rincian Konfirmasi RSVP</h3>
+                <button type="button" class="btn-modal-close" id="btn-modal-close-detail">×</button>
+            </div>
+            
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 18px; color: var(--white);">
+                <!-- Guest Name -->
+                <div>
+                    <div style="font-size: 0.75rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Nama Tamu</div>
+                    <div id="detail-guest-name" style="font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1.15rem; margin-top: 2px;">-</div>
+                </div>
+
+                <!-- Attendance Status & Count -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Status Kehadiran</div>
+                        <div id="detail-attendance-badge" style="margin-top: 6px;">-</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Kapasitas Tamu</div>
+                        <div id="detail-guest-count" style="font-family: monospace; font-size: 1.1rem; font-weight: bold; margin-top: 2px;">-</div>
+                    </div>
+                </div>
+
+                <!-- Message -->
+                <div>
+                    <div style="font-size: 0.75rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Isi Pesan / Ucapan</div>
+                    <div id="detail-message" style="background-color: rgba(15, 23, 42, 0.3); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px; font-size: 0.9rem; margin-top: 6px; line-height: 1.5; white-space: pre-wrap; word-break: break-word;">-</div>
+                </div>
+
+                <!-- Date -->
+                <div>
+                    <div style="font-size: 0.75rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Tanggal & Waktu Pengiriman</div>
+                    <div id="detail-submission-date" style="font-size: 0.9rem; color: var(--slate); margin-top: 2px;">-</div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btn-modal-close-detail-footer" style="padding: 10px 24px;">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Alert Toaster -->
+    <div class="toast" id="toast">
+        <span class="toast-icon" id="toast-icon">✓</span>
+        <span class="toast-message" id="toast-message">Pesan notifikasi</span>
+    </div>
+
+    <!-- Scripts API & Route Guard -->
+    <script src="../js/services/authService.js"></script>
+    
+    <!-- Excel sheet library loaded dynamically in export component, but referenced in head/body as a fallback -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" async></script>
+
+    <!-- Data repositories -->
+    <script src="../js/repositories/rsvpRepository.js"></script>
+    
+    <!-- Components & Managers -->
+    <script src="../js/components/rsvpTable.js"></script>
+    <script src="../js/components/rsvpFilters.js"></script>
+    <script src="../js/components/exportManager.js"></script>
+    <script src="../js/components/analyticsPanel.js"></script>
+    <script src="../js/components/detailModal.js"></script>
+    
+    <!-- Core Service Orchestrator -->
+    <script src="../js/services/rsvpService.js"></script>
+    
+    <!-- Unified Dashboard Shell wrapper -->
+    <script src="../js/components/dashboardShell.js"></script>
+</body>
+
+</html>
