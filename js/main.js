@@ -324,6 +324,16 @@ function renderDynamicContent() {
             footerCopy.textContent = settings.footer_text;
         }
 
+        // Update Gallery Title & Subtitle
+        const galleryTitle = document.getElementById('gallery-display-title');
+        if (galleryTitle && settings.gallery_title) {
+            galleryTitle.textContent = settings.gallery_title;
+        }
+        const gallerySubtitle = document.getElementById('gallery-display-subtitle');
+        if (gallerySubtitle && settings.gallery_subtitle) {
+            gallerySubtitle.textContent = settings.gallery_subtitle;
+        }
+
         const mapIframe = document.querySelector('.map-wrapper iframe');
         if (mapIframe && settings.google_maps_url && settings.google_maps_url.includes('google.com/maps/embed')) {
             mapIframe.src = settings.google_maps_url;

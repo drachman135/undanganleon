@@ -43,7 +43,9 @@ class SettingsService {
             profile_birth_place: 'settings-profile-birth-place',
             profile_birth_date: 'settings-profile-birth-date',
             profile_description: 'settings-profile-description',
-            profile_avatar_url: 'settings-profile-avatar-url'
+            profile_avatar_url: 'settings-profile-avatar-url',
+            gallery_title: 'settings-gallery-title',
+            gallery_subtitle: 'settings-gallery-subtitle'
         };
 
         // File upload helper states

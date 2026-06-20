@@ -41,6 +41,10 @@ class InvitationSettings {
         this.profile_description = data.profile_description || '';
         this.profile_avatar_url = data.profile_avatar_url || null;
 
+        // Gallery Header CMS Section
+        this.gallery_title = data.gallery_title || 'Galeri Kenangan';
+        this.gallery_subtitle = data.gallery_subtitle || 'Perjalanan tumbuh kembang Alfath dari waktu ke waktu.';
+
         // Theme
         this.theme_color = data.theme_color || '#F97316';
     }
@@ -109,6 +113,20 @@ const SettingsValidator = {
             errors.footer_text = 'Teks kaki (footer) wajib diisi';
         } else if (settings.footer_text.length > 200) {
             errors.footer_text = 'Teks kaki (footer) maksimal 200 karakter';
+        }
+
+        // gallery_title: Required, Max 200 characters
+        if (!settings.gallery_title || settings.gallery_title.trim() === '') {
+            errors.gallery_title = 'Judul galeri wajib diisi';
+        } else if (settings.gallery_title.length > 200) {
+            errors.gallery_title = 'Judul galeri maksimal 200 karakter';
+        }
+
+        // gallery_subtitle: Required, Max 300 characters
+        if (!settings.gallery_subtitle || settings.gallery_subtitle.trim() === '') {
+            errors.gallery_subtitle = 'Subjudul galeri wajib diisi';
+        } else if (settings.gallery_subtitle.length > 300) {
+            errors.gallery_subtitle = 'Subjudul galeri maksimal 300 karakter';
         }
 
         // profile_full_name: Required if profile_enabled is true

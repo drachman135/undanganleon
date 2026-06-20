@@ -37,6 +37,8 @@ CREATE TABLE IF NOT EXISTS invitation_settings (
     end_time VARCHAR(50) NOT NULL DEFAULT 'Selesai',
     event_guide TEXT NOT NULL DEFAULT 'Acara diadakan di kediaman utama keluarga. Anda dapat memarkir kendaraan di area yang telah disediakan oleh petugas.',
     footer_text VARCHAR(255) NOT NULL DEFAULT '© 2026 Leon Birthday Invitation',
+    gallery_title VARCHAR(255) NOT NULL DEFAULT 'Galeri Kenangan',
+    gallery_subtitle VARCHAR(255) NOT NULL DEFAULT 'Perjalanan tumbuh kembang Alfath dari waktu ke waktu.',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -264,7 +266,9 @@ INSERT INTO invitation_settings (
     start_time,
     end_time,
     event_guide,
-    footer_text
+    footer_text,
+    gallery_title,
+    gallery_subtitle
 )
 VALUES (
     1, 
@@ -288,5 +292,7 @@ VALUES (
     '15:00',
     'Selesai',
     'Acara diadakan di kediaman utama keluarga. Anda dapat memarkir kendaraan di area yang telah disediakan oleh petugas.',
-    '© 2026 Leon Birthday Invitation'
+    '© 2026 Leon Birthday Invitation',
+    'Galeri Kenangan',
+    'Perjalanan tumbuh kembang Alfath dari waktu ke waktu.'
 ) ON CONFLICT (id) DO NOTHING;
