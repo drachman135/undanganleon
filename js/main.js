@@ -988,10 +988,7 @@ function startEnterAnimation() {
 function handOff() {
     // Start playback attempt for background music synchronized with fade-in
     if (bgAudio && musicEnabled) {
-        const isSessionPaused = sessionStorage.getItem('music_paused') === 'true';
-        if (!isSessionPaused) {
-            playMusicSilently();
-        }
+        playMusicSilently();
     }
 
     // 1. Fade out the stage-enter loading stage
@@ -1059,7 +1056,6 @@ function initFloatingMusicButton() {
                 btn.querySelector('.music-icon').textContent = '🔊';
                 btn.setAttribute('aria-label', 'Matikan Musik');
                 btn.setAttribute('aria-pressed', 'true');
-                sessionStorage.setItem('music_paused', 'false');
             }).catch(err => {
                 console.error('Play request failed:', err);
             });
@@ -1070,7 +1066,6 @@ function initFloatingMusicButton() {
             btn.querySelector('.music-icon').textContent = '🔇';
             btn.setAttribute('aria-label', 'Putar Musik');
             btn.setAttribute('aria-pressed', 'false');
-            sessionStorage.setItem('music_paused', 'true');
         }
     });
 }
