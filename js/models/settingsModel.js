@@ -37,6 +37,7 @@ class InvitationSettings {
         this.profile_birth_place = data.profile_birth_place || '';
         this.profile_birth_date = data.profile_birth_date || '';
         this.profile_description = data.profile_description || '';
+        this.profile_avatar_url = data.profile_avatar_url || null;
 
         // Theme
         this.theme_color = data.theme_color || '#F97316';

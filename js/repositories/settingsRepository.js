@@ -62,6 +62,7 @@ const SettingsRepository = {
             profile_birth_place: settings.profile_birth_place,
             profile_birth_date: settings.profile_birth_date || null,
             profile_description: settings.profile_description,
+            profile_avatar_url: settings.profile_avatar_url,
             updated_at: new Date().toISOString()
         };
 

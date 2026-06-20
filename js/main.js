@@ -392,6 +392,21 @@ function renderDynamicContent() {
 
                 const descDisplay = document.getElementById('profile-display-desc');
                 if (descDisplay) descDisplay.textContent = settings.profile_description || '';
+
+                // Render avatar image or emoji
+                const avatarBadge = document.getElementById('profile-display-badge');
+                const avatarImg = document.getElementById('profile-display-avatar');
+                if (avatarBadge && avatarImg) {
+                    if (settings.profile_avatar_url) {
+                        avatarImg.src = settings.profile_avatar_url;
+                        avatarImg.style.display = 'block';
+                        avatarBadge.style.display = 'none';
+                    } else {
+                        avatarImg.src = '';
+                        avatarImg.style.display = 'none';
+                        avatarBadge.style.display = 'block';
+                    }
+                }
             } else {
                 profileSec.style.display = 'none'; // hide the section
             }

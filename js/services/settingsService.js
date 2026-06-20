@@ -40,8 +40,13 @@ class SettingsService {
             profile_full_name: 'settings-profile-full-name',
             profile_birth_place: 'settings-profile-birth-place',
             profile_birth_date: 'settings-profile-birth-date',
-            profile_description: 'settings-profile-description'
+            profile_description: 'settings-profile-description',
+            profile_avatar_url: 'settings-profile-avatar-url'
         };
+
+        // File upload helper states
+        this.avatarFile = null;
+        this.avatarLocalUrl = null;
     }
 
     /**
@@ -73,6 +78,9 @@ class SettingsService {
             // Setup change detection event listeners
             this.setupChangeListeners();
 
+            // Setup avatar upload handlers
+            this.setupAvatarUploadHandlers();
+
             // Setup color preset bubbles
             this.setupThemePresets();
 
@@ -94,6 +102,15 @@ class SettingsService {
      * Set elements values from settings model object.
      */
     populateForm(settings) {
+        // Reset avatar states on populate
+        this.avatarFile = null;
+        if (this.avatarLocalUrl) {
+            URL.revokeObjectURL(this.avatarLocalUrl);
+            this.avatarLocalUrl = null;
+        }
+        const fileInput = document.getElementById('settings-avatar-file-input');
+        if (fileInput) fileInput.value = '';
+
         Object.keys(this.fields).forEach(key => {
             const elementId = this.fields[key];
             const el = document.getElementById(elementId);
@@ -111,6 +128,25 @@ class SettingsService {
                 el.value = settings[key] || '';
             }
         });
+
+        // Populate avatar preview HTML
+        const previewImg = document.getElementById('avatar-preview-image');
+        const previewEmoji = document.getElementById('avatar-preview-emoji');
+        const btnDelete = document.getElementById('btn-delete-avatar');
+
+        if (previewImg && previewEmoji && btnDelete) {
+            if (settings.profile_avatar_url) {
+                previewImg.src = settings.profile_avatar_url;
+                previewImg.style.display = 'block';
+                previewEmoji.style.display = 'none';
+                btnDelete.style.display = 'block';
+            } else {
+                previewImg.src = '';
+                previewImg.style.display = 'none';
+                previewEmoji.style.display = 'block';
+                btnDelete.style.display = 'none';
+            }
+        }
 
         // Trigger dynamic theme background color skin on preset selections
         this.updateSelectedPresetBubble(settings.theme_color);
@@ -221,7 +257,8 @@ class SettingsService {
             'hero_description', 'event_date', 'start_time', 'end_time', 
             'location_name', 'full_address', 'google_maps_url', 'whatsapp_number', 
             'music_enabled', 'music_volume', 'loading_duration', 'theme_color', 'background_music_url',
-            'profile_enabled', 'profile_full_name', 'profile_birth_place', 'profile_birth_date', 'profile_description'
+            'profile_enabled', 'profile_full_name', 'profile_birth_place', 'profile_birth_date', 'profile_description',
+            'profile_avatar_url'
         ];
 
         for (const key of keysToCompare) {
@@ -231,11 +268,15 @@ class SettingsService {
                     break;
                 }
             } else {
-                if (String(current[key]) !== String(this.originalSettings[key])) {
+                if (String(current[key] || '') !== String(this.originalSettings[key] || '')) {
                     changed = true;
                     break;
                 }
             }
+        }
+
+        if (this.avatarFile !== null) {
+            changed = true;
         }
 
         this.hasChanges = changed;
@@ -260,6 +301,96 @@ class SettingsService {
                 return 'Perubahan belum disimpan';
             }
         });
+    }
+
+    /**
+     * Bind click and change listeners for the profile avatar upload field.
+     */
+    setupAvatarUploadHandlers() {
+        this.avatarFileInput = document.getElementById('settings-avatar-file-input');
+        this.avatarUrlInput = document.getElementById('settings-profile-avatar-url');
+        this.btnSelectAvatar = document.getElementById('btn-select-avatar');
+        this.btnDeleteAvatar = document.getElementById('btn-delete-avatar');
+        this.avatarPreviewEmoji = document.getElementById('avatar-preview-emoji');
+        this.avatarPreviewImage = document.getElementById('avatar-preview-image');
+
+        if (!this.avatarFileInput || !this.btnSelectAvatar) return;
+
+        // Trigger file input click
+        this.btnSelectAvatar.addEventListener('click', () => {
+            this.avatarFileInput.click();
+        });
+
+        // Handle file selection
+        this.avatarFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Validate file size (max 2 MB)
+            if (file.size > 2 * 1024 * 1024) {
+                this.showToast('Ukuran foto profil maksimal 2 MB!', 'error');
+                this.avatarFileInput.value = '';
+                return;
+            }
+
+            // Validate file type
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+            if (!allowedTypes.includes(file.type)) {
+                this.showToast('Format foto harus JPG, PNG, atau WEBP!', 'error');
+                this.avatarFileInput.value = '';
+                return;
+            }
+
+            this.avatarFile = file;
+
+            // Revoke old local object URL if exists
+            if (this.avatarLocalUrl) {
+                URL.revokeObjectURL(this.avatarLocalUrl);
+            }
+
+            this.avatarLocalUrl = URL.createObjectURL(file);
+            
+            // Render local preview
+            if (this.avatarPreviewImage) {
+                this.avatarPreviewImage.src = this.avatarLocalUrl;
+                this.avatarPreviewImage.style.display = 'block';
+            }
+            if (this.avatarPreviewEmoji) {
+                this.avatarPreviewEmoji.style.display = 'none';
+            }
+            if (this.btnDeleteAvatar) {
+                this.btnDeleteAvatar.style.display = 'block';
+            }
+
+            this.detectFormChanges();
+        });
+
+        // Handle file deletion (reset to emoji)
+        if (this.btnDeleteAvatar) {
+            this.btnDeleteAvatar.addEventListener('click', () => {
+                this.avatarFile = null;
+                if (this.avatarLocalUrl) {
+                    URL.revokeObjectURL(this.avatarLocalUrl);
+                    this.avatarLocalUrl = null;
+                }
+                this.avatarFileInput.value = '';
+
+                if (this.avatarUrlInput) {
+                    this.avatarUrlInput.value = '';
+                }
+
+                if (this.avatarPreviewImage) {
+                    this.avatarPreviewImage.src = '';
+                    this.avatarPreviewImage.style.display = 'none';
+                }
+                if (this.avatarPreviewEmoji) {
+                    this.avatarPreviewEmoji.style.display = 'block';
+                }
+                this.btnDeleteAvatar.style.display = 'none';
+
+                this.detectFormChanges();
+            });
+        }
     }
 
     /**
@@ -299,11 +430,47 @@ class SettingsService {
             this.btnSave.disabled = true;
             this.btnSave.textContent = 'Menyimpan...';
 
+            // 1. Upload new avatar if selected
+            if (this.avatarFile) {
+                const timestamp = Date.now();
+                const fileExt = this.avatarFile.name.split('.').pop();
+                const filePath = `profile_avatar_${timestamp}.${fileExt}`;
+
+                // Upload to bucket 'hero-images'
+                const publicUrl = await StorageService.uploadFile('hero-images', filePath, this.avatarFile);
+                targetSettings.profile_avatar_url = publicUrl;
+
+                // Clean up old avatar if there was one
+                if (this.originalSettings.profile_avatar_url && this.originalSettings.profile_avatar_url.includes('/hero-images/')) {
+                    await StorageService.deleteFile('hero-images', this.originalSettings.profile_avatar_url);
+                }
+
+                // Revoke selected local object URL
+                if (this.avatarLocalUrl) {
+                    URL.revokeObjectURL(this.avatarLocalUrl);
+                    this.avatarLocalUrl = null;
+                }
+                this.avatarFile = null;
+                const fileInput = document.getElementById('settings-avatar-file-input');
+                if (fileInput) fileInput.value = '';
+            } 
+            // 2. Delete file if avatar was deleted by admin
+            else if (!targetSettings.profile_avatar_url && this.originalSettings.profile_avatar_url) {
+                if (this.originalSettings.profile_avatar_url.includes('/hero-images/')) {
+                    await StorageService.deleteFile('hero-images', this.originalSettings.profile_avatar_url);
+                }
+                targetSettings.profile_avatar_url = null;
+            }
+
             // Send queries update to Supabase
             const updated = await SettingsRepository.updateSettings(targetSettings);
 
             this.originalSettings = updated;
             this.currentSettings = new InvitationSettings(updated);
+
+            // Re-populate values and reset helper states
+            this.populateForm(this.currentSettings);
+
             this.hasChanges = false;
             this.unsavedBanner.classList.remove('show');
 
