@@ -49,6 +49,7 @@ const SettingsRepository = {
             location_name: settings.location_name,
             full_address: settings.full_address,
             event_guide: settings.event_guide,
+            footer_text: settings.footer_text,
             google_maps_url: settings.google_maps_url,
             whatsapp_number: settings.whatsapp_number,
             music_enabled: settings.music_enabled,

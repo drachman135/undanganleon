@@ -18,11 +18,11 @@
     const menuItems = [
         { id: 'dashboard', label: 'Dashboard', url: './dashboard.html', icon: icons.dashboard },
         { id: 'settings', label: 'Pengaturan Acara', url: './settings.html', icon: icons.settings },
-        { id: 'hero', label: 'Hero Image', url: './hero.html', icon: icons.hero },
-        { id: 'gallery', label: 'Gallery', url: './gallery.html', icon: icons.gallery },
-        { id: 'music', label: 'Background Music', url: './music.html', icon: icons.music },
-        { id: 'guests', label: 'Guest Management', url: './guests.html', icon: icons.guests },
-        { id: 'rsvp', label: 'RSVP Management', url: './rsvp.html', icon: icons.rsvp }
+        { id: 'hero', label: 'Gambar Hero', url: './hero.html', icon: icons.hero },
+        { id: 'gallery', label: 'Galeri Foto', url: './gallery.html', icon: icons.gallery },
+        { id: 'music', label: 'Musik Latar', url: './music.html', icon: icons.music },
+        { id: 'guests', label: 'Manajemen Tamu', url: './guests.html', icon: icons.guests },
+        { id: 'rsvp', label: 'Manajemen RSVP', url: './rsvp.html', icon: icons.rsvp }
     ];
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -46,7 +46,7 @@
 
         // Resolve page title
         const currentItem = menuItems.find(i => i.id === activeItem);
-        const pageTitleText = currentItem ? currentItem.label : 'Admin Panel';
+        const pageTitleText = currentItem ? currentItem.label : 'Panel Admin';
 
         // 1. Create Wrapper
         const wrapper = document.createElement('div');

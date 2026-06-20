@@ -159,10 +159,10 @@
 
                 <!-- SECTION 2.5: PROFILE SECTION CMS -->
                 <div class="section-box">
-                    <h2 class="section-title">👦 Profile Section</h2>
+                    <h2 class="section-title">👦 Bagian Profil Anak</h2>
                     
                     <div class="form-group switch-group">
-                        <label for="settings-profile-enabled" class="form-label" style="margin-bottom: 0;">Enable Profile Section</label>
+                        <label for="settings-profile-enabled" class="form-label" style="margin-bottom: 0;">Aktifkan Bagian Profil</label>
                         <label class="switch">
                             <input type="checkbox" id="settings-profile-enabled">
                             <span class="slider"></span>
@@ -191,25 +191,25 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="settings-profile-full-name" class="form-label">Full Name</label>
+                        <label for="settings-profile-full-name" class="form-label">Nama Lengkap</label>
                         <input type="text" id="settings-profile-full-name" class="form-input" placeholder="Nama Lengkap Anak">
                         <span class="error-msg" id="settings-profile-full-name-error"></span>
                     </div>
 
                     <div class="form-group">
-                        <label for="settings-profile-birth-place" class="form-label">Birth Place</label>
+                        <label for="settings-profile-birth-place" class="form-label">Tempat Lahir</label>
                         <input type="text" id="settings-profile-birth-place" class="form-input" placeholder="Tempat Lahir Anak">
                         <span class="error-msg" id="settings-profile-birth-place-error"></span>
                     </div>
 
                     <div class="form-group">
-                        <label for="settings-profile-birth-date" class="form-label">Birth Date</label>
+                        <label for="settings-profile-birth-date" class="form-label">Tanggal Lahir</label>
                         <input type="date" id="settings-profile-birth-date" class="form-input">
                         <span class="error-msg" id="settings-profile-birth-date-error"></span>
                     </div>
 
                     <div class="form-group" style="margin-bottom: 0;">
-                        <label for="settings-profile-description" class="form-label">Description</label>
+                        <label for="settings-profile-description" class="form-label">Deskripsi Profil</label>
                         <textarea id="settings-profile-description" rows="2" class="form-input" placeholder="Tuliskan biografi singkat atau deskripsi profil anak..."></textarea>
                         <span class="error-msg" id="settings-profile-description-error"></span>
                     </div>
@@ -319,9 +319,9 @@
 
                 <!-- SECTION 6: THEME SETTINGS -->
                 <div class="section-box full-width">
-                    <h2 class="section-title">🎨 Tema Warna Undangan</h2>
+                    <h2 class="section-title">🎨 Tema Warna & Teks Kaki (Footer)</h2>
                     
-                    <div class="form-group" style="margin-bottom: 0;">
+                    <div class="form-group" style="margin-bottom: 16px;">
                         <label for="settings-theme-color" class="form-label">Warna Utama Aksen (Akan menimpa warna oranye)</label>
                         <div class="preset-container">
                             <input type="color" id="settings-theme-color" class="form-input" style="width: 60px; height: 40px; padding: 2px; cursor: pointer; border-radius: 6px;">
@@ -335,6 +335,12 @@
                             </div>
                         </div>
                         <span class="error-msg" id="settings-theme-color-error"></span>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="settings-footer-text" class="form-label">Teks Kaki (Footer)</label>
+                        <input type="text" id="settings-footer-text" class="form-input" placeholder="Contoh: © 2026 Leon Birthday Invitation" required>
+                        <span class="error-msg" id="settings-footer-text-error"></span>
                     </div>
                 </div>
             </div>

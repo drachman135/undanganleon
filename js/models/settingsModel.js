@@ -23,6 +23,7 @@ class InvitationSettings {
         this.location_name = data.location_name || 'Kediaman Alfath';
         this.full_address = data.full_address || 'Jl. Melati No. 24, Cilandak Barat, Jakarta Selatan';
         this.event_guide = data.event_guide || 'Acara diadakan di kediaman utama keluarga. Anda dapat memarkir kendaraan di area yang telah disediakan oleh petugas.';
+        this.footer_text = data.footer_text || '© 2026 Leon Birthday Invitation';
         this.google_maps_url = data.google_maps_url || 'https://maps.google.com/?q=-6.2661555,106.7972412';
         this.whatsapp_number = data.whatsapp_number || '6281234567890';
         
@@ -101,6 +102,13 @@ const SettingsValidator = {
             errors.event_guide = 'Petunjuk acara wajib diisi';
         } else if (settings.event_guide.length > 500) {
             errors.event_guide = 'Petunjuk acara maksimal 500 karakter';
+        }
+
+        // footer_text: Required, Max 200 characters
+        if (!settings.footer_text || settings.footer_text.trim() === '') {
+            errors.footer_text = 'Teks kaki (footer) wajib diisi';
+        } else if (settings.footer_text.length > 200) {
+            errors.footer_text = 'Teks kaki (footer) maksimal 200 karakter';
         }
 
         // profile_full_name: Required if profile_enabled is true

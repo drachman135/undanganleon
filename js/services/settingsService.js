@@ -29,6 +29,7 @@ class SettingsService {
             location_name: 'settings-location-name',
             full_address: 'settings-full-address',
             event_guide: 'settings-event-guide',
+            footer_text: 'settings-footer-text',
             google_maps_url: 'settings-google-maps-url',
             whatsapp_number: 'settings-whatsapp-number',
             music_enabled: 'settings-music-enabled',
@@ -256,7 +257,7 @@ class SettingsService {
         const keysToCompare = [
             'cover_title', 'cover_subtitle', 'child_name', 'child_age', 
             'hero_description', 'event_date', 'start_time', 'end_time', 
-            'location_name', 'full_address', 'event_guide', 'google_maps_url', 'whatsapp_number', 
+            'location_name', 'full_address', 'event_guide', 'footer_text', 'google_maps_url', 'whatsapp_number', 
             'music_enabled', 'music_volume', 'loading_duration', 'theme_color', 'background_music_url',
             'profile_enabled', 'profile_full_name', 'profile_birth_place', 'profile_birth_date', 'profile_description',
             'profile_avatar_url'

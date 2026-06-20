@@ -318,6 +318,12 @@ function renderDynamicContent() {
             btnLocation.href = settings.google_maps_url;
         }
 
+        // Update Footer Copy Text
+        const footerCopy = document.getElementById('footer-copy-text');
+        if (footerCopy && settings.footer_text) {
+            footerCopy.textContent = settings.footer_text;
+        }
+
         const mapIframe = document.querySelector('.map-wrapper iframe');
         if (mapIframe && settings.google_maps_url && settings.google_maps_url.includes('google.com/maps/embed')) {
             mapIframe.src = settings.google_maps_url;
