@@ -866,7 +866,7 @@ function initStageEnvelope() {
             }
         }, 900);
 
-        // 4. Hide hint & button, show "entering" message (after 1800ms)
+        // 4. Hide hint & button, show "entering" message (after 3200ms)
         setTimeout(() => {
             if (els.envCtaArea) {
                 els.envCtaArea.style.opacity = '0';
@@ -888,12 +888,12 @@ function initStageEnvelope() {
             const scene = document.querySelector('.env-scene');
             if (scene) scene.appendChild(readyMsg);
 
-        }, 1800);
+        }, 3200);
 
         // 5. Transition to enter stage
         setTimeout(() => {
             switchStage(stages.envelope, stages.enter, startEnterAnimation);
-        }, 2600);
+        }, 4700);
     }
 
     // Button click
