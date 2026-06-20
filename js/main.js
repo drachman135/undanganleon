@@ -273,7 +273,11 @@ function renderDynamicContent() {
         // Update Hero Description / subheadline
         const heroSubheadline = document.querySelector('.hero-subheadline');
         if (heroSubheadline && settings.hero_description) {
-            heroSubheadline.textContent = settings.hero_description;
+            let desc = settings.hero_description;
+            if (desc === 'Mari bergabung dalam petualangan ulang tahun yang spesial.') {
+                desc = 'jangan lupa hadir ya';
+            }
+            heroSubheadline.textContent = desc;
         }
 
         // Update Countdown Subtitle
@@ -733,6 +737,9 @@ const els = {
 
     // Stage 4
     progressBar: document.getElementById('enter-progress-bar'),
+
+    // Hero Section
+    heroGuestName: document.getElementById('hero-guest-name'),
 };
 
 /* ══════════════════════════════════════════
@@ -773,6 +780,7 @@ function once(fn) {
 function injectGuestNames() {
     if (els.pkgGuestName) els.pkgGuestName.textContent = GUEST_NAME;
     if (els.invGuestName) els.invGuestName.textContent = GUEST_NAME;
+    if (els.heroGuestName) els.heroGuestName.textContent = GUEST_NAME;
     const rsvpInput = document.getElementById('rsvp-name');
     if (rsvpInput && GUEST_NAME && GUEST_NAME !== 'Teman') {
         rsvpInput.value = GUEST_NAME;
