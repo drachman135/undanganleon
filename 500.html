@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 Kesalahan Server Internal — Mesin Mogok 🔧</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --navy:    #0F172A;
+            --white:   #FAFAF9;
+            --slate:   #94A3B8;
+            --orange:  #F97316;
+            --orange-d:#EA6500;
+            --red:     #EF4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--navy);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(239, 68, 68, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(249, 115, 22, 0.08) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 480px;
+            width: 100%;
+        }
+
+        .wrench-animation {
+            width: 160px;
+            height: auto;
+            margin: 0 auto 32px;
+            animation: spin-n-tilt 2.5s ease-in-out infinite;
+        }
+
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+            color: var(--white);
+        }
+
+        h1 span {
+            background: linear-gradient(135deg, var(--red), var(--orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        p {
+            color: var(--slate);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--orange), var(--orange-d));
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 26px rgba(249, 115, 22, 0.45);
+        }
+
+        @keyframes spin-n-tilt {
+            0%, 100% {
+                transform: rotate(0deg) scale(1);
+            }
+            50% {
+                transform: rotate(180deg) scale(1.05);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Animated Wrench/Gear SVG -->
+        <svg class="wrench-animation" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Gear -->
+            <circle cx="120" cy="120" r="40" stroke="#64748B" stroke-width="8" stroke-dasharray="12 8"/>
+            <circle cx="120" cy="120" r="24" fill="none" stroke="#475569" stroke-width="4"/>
+            
+            <!-- Wrench Cross -->
+            <path d="M40 200 L95 145" stroke="#94A3B8" stroke-width="12" stroke-linecap="round"/>
+            <path d="M35 190 C25 180 20 200 25 210 C30 220 50 215 40 200 Z" fill="#64748B"/>
+            <path d="M100 140 L80 160" stroke="#475569" stroke-width="6"/>
+
+            <!-- Broken Spark Lightnings -->
+            <path d="M110 50 L120 30 L105 30 L115 10" stroke="#FBBF24" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M60 90 L75 80 L65 75 L80 65" stroke="#FBBF24" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M180 85 L165 75 L175 70 L160 60" stroke="#FBBF24" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+
+        <h1>Aduh! <span>Mesin Mogok</span> 🔧</h1>
+        <p>Terjadi kendala pada sistem server kami saat memuat data undangan. Jangan khawatir, tim mekanik kami sedang melakukan perbaikan darurat. Silakan coba muat ulang halaman beberapa saat lagi.</p>
+        
+        <button onclick="window.location.reload();" class="btn">Muat Ulang Halaman</button>
+    </div>
+</body>
+
+</html>

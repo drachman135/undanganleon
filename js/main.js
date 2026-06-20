@@ -101,8 +101,32 @@ async function fetchApplicationData() {
         AppState.settings = settings;
         AppState.gallery = gallery;
         AppState.guest = guest;
+
+        // Cache settings & gallery locally for offline/fallback stability
+        if (settings) {
+            localStorage.setItem('cached_settings', JSON.stringify(settings));
+        }
+        if (gallery) {
+            localStorage.setItem('cached_gallery', JSON.stringify(gallery));
+        }
     } catch (err) {
-        console.error('Failed to pre-fetch application database content:', err);
+        console.error('Failed to pre-fetch application database content, loading from cache:', err);
+        
+        // Load fallback caches if Supabase is offline
+        try {
+            const cachedSettings = localStorage.getItem('cached_settings');
+            const cachedGallery = localStorage.getItem('cached_gallery');
+            if (cachedSettings) {
+                AppState.settings = JSON.parse(cachedSettings);
+                console.log('Restored settings from cache.');
+            }
+            if (cachedGallery) {
+                AppState.gallery = JSON.parse(cachedGallery);
+                console.log('Restored gallery from cache.');
+            }
+        } catch (cacheErr) {
+            console.error('Failed to read from localStorage cache:', cacheErr);
+        }
     }
 }
 
@@ -152,8 +176,75 @@ function renderDynamicContent() {
             }
         }
 
-        // Update Title
-        document.title = `Kiriman Spesial — ${childName} Genap ${childAge.toLowerCase()} Tahun 🚛`;
+        // Update Title & SEO Meta Tags Dynamically
+        const pageTitle = `Kiriman Spesial — ${childName} Genap ${childAge.toLowerCase()} Tahun 🚛`;
+        document.title = pageTitle;
+
+        // Dynamic Canonical and Open Graph URL
+        const currentUrl = window.location.href;
+        const canonicalLink = document.getElementById('canonical-link');
+        if (canonicalLink) canonicalLink.href = currentUrl;
+        
+        const ogUrl = document.getElementById('og-url');
+        if (ogUrl) ogUrl.content = currentUrl;
+        const twitterUrl = document.getElementById('twitter-url');
+        if (twitterUrl) twitterUrl.content = currentUrl;
+
+        // Dynamic description
+        const descText = settings.hero_description || `Sebuah kiriman ulang tahun spesial telah tiba untukmu. Buka undanganmu untuk bergabung di Pesta Ulang Tahun milik ${childName}.`;
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) metaDesc.content = descText;
+
+        const ogDesc = document.getElementById('og-description');
+        if (ogDesc) ogDesc.content = descText;
+        const twitterDesc = document.getElementById('twitter-description');
+        if (twitterDesc) twitterDesc.content = descText;
+
+        // Dynamic Title tags
+        const shareTitle = settings.cover_title || `Kiriman Ulang Tahun Spesial ${childName} 🚛`;
+        const ogTitle = document.getElementById('og-title');
+        if (ogTitle) ogTitle.content = shareTitle;
+        const twitterTitle = document.getElementById('twitter-title');
+        if (twitterTitle) twitterTitle.content = shareTitle;
+
+        // Dynamic Image tags (Hero Image)
+        const shareImage = settings.hero_image_url ? `${window.location.origin}/${settings.hero_image_url}` : `${window.location.origin}/images/hero_cake.png`;
+        const ogImage = document.getElementById('og-image');
+        if (ogImage) ogImage.content = shareImage;
+        const twitterImage = document.getElementById('twitter-image');
+        if (twitterImage) twitterImage.content = shareImage;
+
+        // Inject Structured Metadata JSON-LD
+        let structuredDataScript = document.getElementById('structured-data-event');
+        if (!structuredDataScript) {
+            structuredDataScript = document.createElement('script');
+            structuredDataScript.id = 'structured-data-event';
+            structuredDataScript.type = 'application/ld+json';
+            document.head.appendChild(structuredDataScript);
+        }
+        
+        const eventSchema = {
+            "@context": "https://schema.org",
+            "@type": "Event",
+            "name": `Pesta Ulang Tahun ${childName} Ke-${childAge} 🚛`,
+            "startDate": settings.event_date ? `${settings.event_date}T15:00:00+07:00` : "2026-07-12T15:00:00+07:00",
+            "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+            "eventStatus": "https://schema.org/EventScheduled",
+            "location": {
+                "@type": "Place",
+                "name": settings.location_name || "Kediaman Alfath",
+                "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": settings.full_address || "Jl. Melati No. 24, Cilandak Barat",
+                    "addressLocality": "Jakarta Selatan",
+                    "addressRegion": "DKI Jakarta",
+                    "addressCountry": "ID"
+                }
+            },
+            "image": [ shareImage ],
+            "description": descText
+        };
+        structuredDataScript.textContent = JSON.stringify(eventSchema, null, 2);
 
         // Update Truck SVG
         const truckText = document.querySelector('#truck-vehicle svg text');
@@ -264,6 +355,16 @@ function renderDynamicContent() {
             bgAudio.loop = true;
             bgAudio.volume = defaultVolume;
             bgAudio.preload = 'auto';
+            
+            // Graceful error handling for audio load failure
+            bgAudio.addEventListener('error', (e) => {
+                console.warn('Background music failed to load gracefully:', e);
+                const floatMusicBtn = document.getElementById('floating-music-btn');
+                if (floatMusicBtn) {
+                    floatMusicBtn.style.display = 'none';
+                }
+            });
+
             bgAudio.load();
         }
     }

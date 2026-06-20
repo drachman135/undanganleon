@@ -1,0 +1,22 @@
+{
+  "name": "Undangan Ulang Tahun Alfath 🚛",
+  "short_name": "Undangan Alfath",
+  "description": "Kiriman undangan ulang tahun spesial digital Alfath",
+  "icons": [
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#F97316",
+  "background_color": "#0F172A",
+  "display": "standalone",
+  "orientation": "portrait",
+  "start_url": "/?utm_source=webmanifest"
+}

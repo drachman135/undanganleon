@@ -167,6 +167,12 @@ class GuestForm {
             // Force redraw before adding class for smooth transition
             this.modal.offsetHeight;
             this.modal.classList.add('show');
+
+            // Add escape key handler
+            this._escHandler = (e) => {
+                if (e.key === 'Escape') this.close();
+            };
+            document.addEventListener('keydown', this._escHandler);
         }
     }
 
@@ -176,6 +182,11 @@ class GuestForm {
     close() {
         if (this.modal) {
             this.modal.classList.remove('show');
+            // Remove escape key handler
+            if (this._escHandler) {
+                document.removeEventListener('keydown', this._escHandler);
+                this._escHandler = null;
+            }
             // Hide after animation finishes
             setTimeout(() => {
                 this.modal.style.display = 'none';

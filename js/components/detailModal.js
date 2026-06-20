@@ -87,6 +87,12 @@ class DetailModal {
             this.modal.style.display = 'flex';
             this.modal.offsetHeight; // force DOM repaint
             this.modal.classList.add('show');
+
+            // Add escape key handler
+            this._escHandler = (e) => {
+                if (e.key === 'Escape') this.close();
+            };
+            document.addEventListener('keydown', this._escHandler);
         }
     }
 
@@ -96,6 +102,11 @@ class DetailModal {
     close() {
         if (this.modal) {
             this.modal.classList.remove('show');
+            // Remove escape key handler
+            if (this._escHandler) {
+                document.removeEventListener('keydown', this._escHandler);
+                this._escHandler = null;
+            }
             setTimeout(() => {
                 this.modal.style.display = 'none';
             }, 300);

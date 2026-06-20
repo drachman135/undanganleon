@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Halaman Tidak Ditemukan — Kiriman Hilang 🚛</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --navy:    #0F172A;
+            --white:   #FAFAF9;
+            --slate:   #94A3B8;
+            --orange:  #F97316;
+            --orange-d:#EA6500;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--navy);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(249, 115, 22, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(96, 165, 250, 0.08) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 480px;
+            width: 100%;
+        }
+
+        .truck-animation {
+            width: 180px;
+            height: auto;
+            margin: 0 auto 32px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 2.2rem;
+            margin-bottom: 12px;
+            color: var(--white);
+        }
+
+        h1 span {
+            background: linear-gradient(135deg, #FBBF24, var(--orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        p {
+            color: var(--slate);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--orange), var(--orange-d));
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 26px rgba(249, 115, 22, 0.45);
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-10px) rotate(-3deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Animated Truck SVG -->
+        <svg class="truck-animation" viewBox="0 0 240 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Road Line -->
+            <line x1="10" y1="125" x2="230" y2="125" stroke="#475569" stroke-width="4" stroke-linecap="round" stroke-dasharray="10 10"/>
+            
+            <!-- Truck Cab -->
+            <path d="M140 50H185C195 50 200 55 202 65L208 85C210 90 210 95 210 105V115H140V50Z" fill="#F97316"/>
+            <!-- Window -->
+            <path d="M150 58H180L190 78H150V58Z" fill="#0F172A"/>
+            <!-- Cargo Bed / Box container -->
+            <rect x="30" y="35" width="110" height="80" rx="6" fill="#475569" stroke="#334155" stroke-width="2"/>
+            <path d="M35 35V115M60 35V115M85 35V115M110 35V115M135 35V115" stroke="#334155" stroke-width="1"/>
+            
+            <!-- Wheel Back -->
+            <circle cx="65" cy="120" r="16" fill="#1E293B" stroke="#64748B" stroke-width="3"/>
+            <circle cx="65" cy="120" r="6" fill="#94A3B8"/>
+            
+            <!-- Wheel Front -->
+            <circle cx="175" cy="120" r="16" fill="#1E293B" stroke="#64748B" stroke-width="3"/>
+            <circle cx="175" cy="120" r="6" fill="#94A3B8"/>
+        </svg>
+
+        <h1>Waduh! <span>Kiriman Nyasar</span> 🚛</h1>
+        <p>Halaman yang Anda cari tidak ditemukan atau telah dipindahkan. Paket kiriman spesial Anda mungkin salah jalan, silakan kembali ke jalur yang benar.</p>
+        
+        <a href="/" class="btn">Kembali ke Jalur Utama</a>
+    </div>
+</body>
+
+</html>

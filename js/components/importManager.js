@@ -40,15 +40,9 @@ class ImportManager {
             this.toggleBtn.addEventListener('click', () => {
                 const isHidden = window.getComputedStyle(this.panel).display === 'none';
                 if (isHidden) {
-                    this.panel.style.display = 'block';
-                    this.toggleBtn.innerHTML = '📤 Sembunyikan Impor';
-                    this.toggleBtn.classList.remove('btn-secondary');
-                    this.toggleBtn.classList.add('btn-primary');
+                    this.show();
                 } else {
-                    this.panel.style.display = 'none';
-                    this.toggleBtn.innerHTML = '📥 Impor Massal';
-                    this.toggleBtn.classList.remove('btn-primary');
-                    this.toggleBtn.classList.add('btn-secondary');
+                    this.hide();
                 }
             });
         }
@@ -248,6 +242,42 @@ class ImportManager {
         if (this.pasteArea) this.pasteArea.value = '';
         if (this.fileInput) this.fileInput.value = '';
         if (this.summaryPanel) this.summaryPanel.style.display = 'none';
+    }
+
+    show() {
+        if (!this.panel) return;
+        this.panel.style.display = 'block';
+        if (this.toggleBtn) {
+            this.toggleBtn.innerHTML = '📤 Sembunyikan Impor';
+            this.toggleBtn.classList.remove('btn-secondary');
+            this.toggleBtn.classList.add('btn-primary');
+        }
+
+        // Register esc key listener
+        if (!this._escHandler) {
+            this._escHandler = (e) => {
+                if (e.key === 'Escape') {
+                    this.hide();
+                }
+            };
+            document.addEventListener('keydown', this._escHandler);
+        }
+    }
+
+    hide() {
+        if (!this.panel) return;
+        this.panel.style.display = 'none';
+        if (this.toggleBtn) {
+            this.toggleBtn.innerHTML = '📥 Impor Massal';
+            this.toggleBtn.classList.remove('btn-primary');
+            this.toggleBtn.classList.add('btn-secondary');
+        }
+
+        // Remove esc key listener
+        if (this._escHandler) {
+            document.removeEventListener('keydown', this._escHandler);
+            this._escHandler = null;
+        }
     }
 }
 

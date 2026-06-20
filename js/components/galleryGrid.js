@@ -62,15 +62,15 @@ class GalleryGrid {
             
             <!-- Thumbnail Image and Zoom Overlay -->
             <div class="gallery-card-img-wrapper">
-                <img class="gallery-card-img" src="${this.escapeHtml(img.image_url)}" alt="${this.escapeHtml(title)}" loading="lazy">
+                <img class="gallery-card-img" src="${this.escapeHtml(img.image_url)}" alt="${this.escapeHtml(title) || 'Foto galeri ke-' + (index + 1)}" loading="lazy">
                 
                 <div class="gallery-card-actions-overlay">
                     <!-- Zoom Button -->
-                    <button type="button" class="btn-overlay-circle btn-card-zoom" title="Perbesar Gambar">
+                    <button type="button" class="btn-overlay-circle btn-card-zoom" title="Perbesar Gambar" aria-label="Perbesar gambar ${this.escapeHtml(title) || 'ke-' + (index + 1)}">
                         🔍
                     </button>
                     <!-- Drag Handle -->
-                    <div class="btn-overlay-circle drag-handle" title="Tarik untuk mengubah urutan">
+                    <div class="btn-overlay-circle drag-handle" title="Tarik untuk mengubah urutan" role="button" aria-label="Tarik untuk mengubah urutan gambar ${this.escapeHtml(title) || 'ke-' + (index + 1)}" tabindex="0">
                         ☰
                     </div>
                 </div>
@@ -79,12 +79,12 @@ class GalleryGrid {
             <!-- Card Details (Title & Date) -->
             <div class="gallery-card-details">
                 <div class="form-group" style="margin-bottom: 0;">
-                    <input type="text" class="gallery-card-title-input card-title-input" value="${this.escapeHtml(title)}" placeholder="Tambah judul foto..." data-id="${img.id}">
+                    <input type="text" class="gallery-card-title-input card-title-input" value="${this.escapeHtml(title)}" placeholder="Tambah judul foto..." data-id="${img.id}" aria-label="Judul gambar ke-${index + 1}">
                 </div>
                 
                 <div class="gallery-card-footer">
                     <span>${this.escapeHtml(uploadDateStr)}</span>
-                    <button type="button" class="btn-delete-card btn-card-delete" data-id="${img.id}">
+                    <button type="button" class="btn-delete-card btn-card-delete" data-id="${img.id}" aria-label="Hapus gambar ${this.escapeHtml(title) || 'ke-' + (index + 1)}">
                         🗑️ Hapus
                     </button>
                 </div>

@@ -113,24 +113,25 @@ class GuestTable {
 
         const inviteUrl = guest.invitation_url || '';
         const dateStr = this.formatDate(guest.created_at);
+        const escapedName = this.escapeHtml(guest.guest_name);
 
         tr.innerHTML = `
-            <td style="font-weight: 600; color: var(--white);">${this.escapeHtml(guest.guest_name)}</td>
+            <td style="font-weight: 600; color: var(--white);">${escapedName}</td>
             <td><code style="color: var(--slate); font-size: 0.8rem; background: rgba(255, 255, 255, 0.05); padding: 2px 6px; border-radius: 4px;">${this.escapeHtml(guest.guest_slug)}</code></td>
             <td>
                 <div class="guest-link-cell">
                     <a href="${this.escapeHtml(inviteUrl)}" class="link-text-truncate" target="_blank" title="Buka Undangan">${this.escapeHtml(inviteUrl)}</a>
-                    <button type="button" class="btn-action-icon btn-copy-link" title="Salin Tautan">
+                    <button type="button" class="btn-action-icon btn-copy-link" title="Salin Tautan" aria-label="Salin tautan undangan untuk ${escapedName}">
                         📋
                     </button>
                 </div>
             </td>
             <td style="color: var(--slate); font-size: 0.85rem;">${this.escapeHtml(dateStr)}</td>
             <td style="text-align: right;">
-                <button type="button" class="btn-action-icon btn-edit-action" title="Edit Tamu" style="margin-right: 8px;">
+                <button type="button" class="btn-action-icon btn-edit-action" title="Edit Tamu" aria-label="Edit tamu ${escapedName}" style="margin-right: 8px;">
                     ✏️
                 </button>
-                <button type="button" class="btn-action-icon btn-delete-action btn-delete" title="Hapus Tamu">
+                <button type="button" class="btn-action-icon btn-delete-action btn-delete" title="Hapus Tamu" aria-label="Hapus tamu ${escapedName}">
                     🗑️
                 </button>
             </td>
@@ -162,11 +163,12 @@ class GuestTable {
 
         const inviteUrl = guest.invitation_url || '';
         const dateStr = this.formatDate(guest.created_at);
+        const escapedName = this.escapeHtml(guest.guest_name);
 
         card.innerHTML = `
             <div class="mobile-card-header">
                 <div>
-                    <div class="mobile-guest-name">${this.escapeHtml(guest.guest_name)}</div>
+                    <div class="mobile-guest-name">${escapedName}</div>
                     <div class="mobile-guest-slug">Slug: <code>${this.escapeHtml(guest.guest_slug)}</code></div>
                 </div>
             </div>
@@ -175,7 +177,7 @@ class GuestTable {
                     <span class="mobile-row-label">Tautan Undangan</span>
                     <div class="guest-link-cell" style="max-width: 100%; margin-top: 4px;">
                         <a href="${this.escapeHtml(inviteUrl)}" class="link-text-truncate" target="_blank" title="Buka Undangan">${this.escapeHtml(inviteUrl)}</a>
-                        <button type="button" class="btn-action-icon btn-copy-link" title="Salin Tautan">
+                        <button type="button" class="btn-action-icon btn-copy-link" title="Salin Tautan" aria-label="Salin tautan undangan untuk ${escapedName}">
                             📋
                         </button>
                     </div>
@@ -186,10 +188,10 @@ class GuestTable {
                 </div>
             </div>
             <div class="mobile-card-footer">
-                <button type="button" class="btn btn-secondary btn-edit-action" style="padding: 6px 12px; font-size: 0.75rem; display: inline-flex; align-items: center; gap: 4px;">
+                <button type="button" class="btn btn-secondary btn-edit-action" aria-label="Edit tamu ${escapedName}" style="padding: 6px 12px; font-size: 0.75rem; display: inline-flex; align-items: center; gap: 4px;">
                     ✏️ Edit
                 </button>
-                <button type="button" class="btn btn-delete-action" style="padding: 6px 12px; font-size: 0.75rem; background-color: rgba(239, 68, 68, 0.15); color: #FCA5A5; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--radius-sm); cursor: pointer;">
+                <button type="button" class="btn btn-delete-action" aria-label="Hapus tamu ${escapedName}" style="padding: 6px 12px; font-size: 0.75rem; background-color: rgba(239, 68, 68, 0.15); color: #FCA5A5; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--radius-sm); cursor: pointer;">
                     🗑️ Hapus
                 </button>
             </div>

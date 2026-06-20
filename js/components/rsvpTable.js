@@ -122,18 +122,19 @@ class RSVPTable {
         const count = rsvp.guest_count || 0;
         const message = rsvp.message || '-';
         const dateStr = this.formatDate(rsvp.created_at);
+        const escapedName = this.escapeHtml(rsvp.guest_name);
 
         tr.innerHTML = `
-            <td style="font-weight: 600; color: var(--white);">${this.escapeHtml(rsvp.guest_name)}</td>
+            <td style="font-weight: 600; color: var(--white);">${escapedName}</td>
             <td><span class="badge ${statusClass}">${statusLabel}</span></td>
             <td style="font-family: monospace; font-weight: bold; font-size: 0.95rem;">${count}</td>
             <td class="message-cell" title="${this.escapeHtml(message)}">${this.escapeHtml(message)}</td>
             <td style="color: var(--slate); font-size: 0.85rem;">${this.escapeHtml(dateStr)}</td>
             <td style="text-align: right;" onclick="event.stopPropagation();">
-                <button type="button" class="btn-action-icon btn-detail-action" title="Rincian RSVP" style="margin-right: 8px;">
+                <button type="button" class="btn-action-icon btn-detail-action" title="Rincian RSVP" aria-label="Rincian RSVP dari ${escapedName}" style="margin-right: 8px;">
                     👁️
                 </button>
-                <button type="button" class="btn-action-icon btn-delete-action btn-delete" title="Hapus RSVP">
+                <button type="button" class="btn-action-icon btn-delete-action btn-delete" title="Hapus RSVP" aria-label="Hapus RSVP dari ${escapedName}">
                     🗑️
                 </button>
             </td>
@@ -169,10 +170,11 @@ class RSVPTable {
         const count = rsvp.guest_count || 0;
         const message = rsvp.message || '-';
         const dateStr = this.formatDate(rsvp.created_at);
+        const escapedName = this.escapeHtml(rsvp.guest_name);
 
         card.innerHTML = `
             <div class="mobile-card-header">
-                <div class="mobile-guest-name">${this.escapeHtml(rsvp.guest_name)}</div>
+                <div class="mobile-guest-name">${escapedName}</div>
                 <span class="badge ${statusClass}">${statusLabel}</span>
             </div>
             <div class="mobile-card-body">
@@ -192,10 +194,10 @@ class RSVPTable {
                 </div>
             </div>
             <div class="mobile-card-footer">
-                <button type="button" class="btn btn-secondary btn-detail-action" style="padding: 6px 12px; font-size: 0.75rem; display: inline-flex; align-items: center; gap: 4px;">
+                <button type="button" class="btn btn-secondary btn-detail-action" aria-label="Rincian RSVP dari ${escapedName}" style="padding: 6px 12px; font-size: 0.75rem; display: inline-flex; align-items: center; gap: 4px;">
                     👁️ Rincian
                 </button>
-                <button type="button" class="btn-delete-action" style="padding: 6px 12px; font-size: 0.75rem; background-color: rgba(239, 68, 68, 0.15); color: #FCA5A5; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--radius-sm); cursor: pointer;">
+                <button type="button" class="btn-delete-action" aria-label="Hapus RSVP dari ${escapedName}" style="padding: 6px 12px; font-size: 0.75rem; background-color: rgba(239, 68, 68, 0.15); color: #FCA5A5; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--radius-sm); cursor: pointer;">
                     🗑️ Hapus
                 </button>
             </div>
@@ -237,6 +239,7 @@ class RSVPTable {
         const prevBtn = document.createElement('button');
         prevBtn.className = 'btn-pagination';
         prevBtn.innerHTML = '←';
+        prevBtn.setAttribute('aria-label', 'Halaman sebelumnya');
         prevBtn.disabled = this.currentPage === 1;
         prevBtn.addEventListener('click', () => {
             this.currentPage--;
@@ -257,6 +260,7 @@ class RSVPTable {
             const pageBtn = document.createElement('button');
             pageBtn.className = `btn-pagination ${p === this.currentPage ? 'active' : ''}`;
             pageBtn.textContent = p;
+            pageBtn.setAttribute('aria-label', `Halaman ${p}`);
             pageBtn.addEventListener('click', () => {
                 this.currentPage = p;
                 this.render();
@@ -268,6 +272,7 @@ class RSVPTable {
         const nextBtn = document.createElement('button');
         nextBtn.className = 'btn-pagination';
         nextBtn.innerHTML = '→';
+        nextBtn.setAttribute('aria-label', 'Halaman berikutnya');
         nextBtn.disabled = this.currentPage === totalPages;
         nextBtn.addEventListener('click', () => {
             this.currentPage++;
