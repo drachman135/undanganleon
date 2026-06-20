@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Admin — Gallery 📸</title>
+    <title>Panel Admin — Galeri Foto 📸</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,22 +15,686 @@
     <script src="../js/supabase.js"></script>
     <script src="../js/middleware/authGuard.js"></script>
     
+    <!-- SortableJS for Drag and Drop -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    
     <!-- Unified Dashboard CSS -->
     <link rel="stylesheet" href="../css/dashboard.css">
+    
+    <!-- Gallery specific custom styling -->
+    <style>
+        /* Gallery Grid Layout */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        @media (max-width: 1200px) {
+            .gallery-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Gallery Card Styles */
+        .gallery-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            position: relative;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .gallery-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(249, 115, 22, 0.3);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .gallery-card.dragging {
+            opacity: 0.5;
+            border: 2px dashed var(--orange);
+        }
+        
+        .gallery-card-img-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+            background-color: #0d121f;
+        }
+        
+        .gallery-card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-card:hover .gallery-card-img {
+            transform: scale(1.05);
+        }
+        
+        /* Overlays & Badges */
+        .gallery-card-select-overlay {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 10;
+        }
+        
+        .gallery-card-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--orange);
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .gallery-card-badges {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+        
+        .badge-sort-order {
+            background-color: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--gold);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .gallery-card-actions-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(11, 15, 25, 0.5);
+            backdrop-filter: blur(2px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+            z-index: 5;
+        }
+        
+        .gallery-card-img-wrapper:hover .gallery-card-actions-overlay {
+            opacity: 1;
+        }
+        
+        .btn-overlay-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .btn-overlay-circle:hover {
+            background-color: var(--orange);
+            color: white;
+            border-color: var(--orange);
+            transform: scale(1.1);
+        }
+        
+        .btn-overlay-circle.drag-handle {
+            cursor: grab;
+        }
+        
+        .btn-overlay-circle.drag-handle:active {
+            cursor: grabbing;
+        }
+        
+        /* Card details area */
+        .gallery-card-details {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+        }
+        
+        .gallery-card-title-input {
+            width: 100%;
+            background-color: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-sm);
+            color: var(--white);
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .gallery-card-title-input:focus {
+            border-color: var(--orange);
+            background-color: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.15);
+        }
+        
+        .gallery-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--slate);
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+            margin-top: auto;
+        }
+        
+        .btn-delete-card {
+            background: none;
+            border: none;
+            color: #FCA5A5;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: var(--transition);
+        }
+        
+        .btn-delete-card:hover {
+            color: var(--red);
+        }
+        
+        /* Dropzone component */
+        .upload-dropzone {
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            border-radius: var(--radius-md);
+            padding: 40px 24px;
+            text-align: center;
+            cursor: pointer;
+            background-color: rgba(15, 23, 42, 0.3);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            min-height: 200px;
+            margin-bottom: 24px;
+        }
+        
+        .upload-dropzone:hover, 
+        .upload-dropzone.dragover {
+            border-color: var(--orange);
+            background-color: rgba(249, 115, 22, 0.05);
+        }
+        
+        .upload-dropzone.dragover {
+            transform: scale(1.01);
+        }
+        
+        .upload-icon {
+            font-size: 2.8rem;
+            display: block;
+            margin-bottom: 4px;
+            transition: transform 0.3s ease;
+        }
+        
+        .upload-dropzone:hover .upload-icon {
+            transform: translateY(-4px);
+        }
+        
+        .upload-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--white);
+        }
+        
+        .upload-desc {
+            font-size: 0.8rem;
+            color: var(--slate);
+            max-width: 380px;
+            line-height: 1.4;
+        }
+        
+        /* Upload Status List */
+        .upload-status-list {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 600px;
+        }
+        
+        .upload-status-item {
+            background-color: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.8rem;
+        }
+        
+        .upload-status-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .upload-status-name {
+            font-weight: 500;
+            color: var(--white);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .upload-status-progress {
+            font-weight: 600;
+            color: var(--gold);
+        }
+        
+        .upload-progress-bar-wrapper {
+            width: 100%;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+        
+        .upload-progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--orange), var(--gold));
+            transition: width 0.2s ease;
+        }
+        
+        /* Preview Lightbox Modal */
+        .lightbox-modal {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(7, 10, 19, 0.95);
+            z-index: 9999;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .lightbox-modal.show {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .lightbox-content-wrapper {
+            position: relative;
+            max-width: 90vw;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .lightbox-image-container {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .lightbox-img {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+            user-select: none;
+        }
+        
+        .lightbox-caption {
+            color: var(--white);
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-top: 16px;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+        
+        /* Lightbox Control buttons */
+        .btn-lightbox {
+            position: absolute;
+            background: rgba(17, 24, 39, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            color: var(--white);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 10;
+        }
+        
+        .btn-lightbox:hover {
+            background-color: var(--orange);
+            border-color: var(--orange);
+            transform: scale(1.1);
+        }
+        
+        .btn-lightbox.close {
+            top: 24px;
+            right: 24px;
+        }
+        
+        .btn-lightbox.zoom {
+            top: 24px;
+            right: 84px;
+        }
+        
+        .btn-lightbox.prev {
+            left: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .btn-lightbox.next {
+            right: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        @media (max-width: 768px) {
+            .btn-lightbox.prev {
+                left: 12px;
+                width: 38px;
+                height: 38px;
+            }
+            .btn-lightbox.next {
+                right: 12px;
+                width: 38px;
+                height: 38px;
+            }
+            .btn-lightbox.close {
+                top: 12px;
+                right: 12px;
+                width: 38px;
+                height: 38px;
+            }
+            .btn-lightbox.zoom {
+                top: 12px;
+                right: 60px;
+                width: 38px;
+                height: 38px;
+            }
+        }
+        
+        /* Footer action buttons bar */
+        .actions-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px 24px;
+            margin-top: 32px;
+        }
+        
+        .actions-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .actions-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .bulk-checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--slate);
+            font-weight: 500;
+        }
+        
+        .btn-danger {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #FCA5A5;
+        }
+        
+        .btn-danger:hover:not(:disabled) {
+            background-color: var(--red);
+            border-color: var(--red);
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        }
+        
+        .btn-danger:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        /* Skeleton grid boxes */
+        .skeleton-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            aspect-ratio: 4 / 5.5;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+    </style>
 </head>
 
 <body>
     <div id="dashboard-content">
-        <div class="placeholder-container">
-            <span class="placeholder-icon">📸</span>
-            <h2 class="placeholder-title">Kelola Galeri Foto</h2>
-            <p class="placeholder-desc">Unggah foto-foto kenangan, ubah urutan tampil (sort order), dan tambahkan caption/judul foto pada bagian galeri kenangan.</p>
-            <span class="placeholder-badge">Segera Hadir / Coming Soon</span>
+        <!-- SECTION 1: GALLERY OVERVIEW -->
+        <div class="stats-grid" id="gallery-overview">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Total Foto</span>
+                    <span class="card-icon">📸</span>
+                </div>
+                <div class="card-value" id="stats-total-images">-</div>
+                <div class="card-desc">Foto terunggah di album galeri</div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Unggahan Terakhir</span>
+                    <span class="card-icon">⏳</span>
+                </div>
+                <div class="card-value" id="stats-latest-upload" style="font-size: 1.15rem; font-weight: 600; padding: 6px 0;">-</div>
+                <div class="card-desc" id="stats-latest-date">Belum ada aktivitas</div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Status Penyimpanan</span>
+                    <span class="card-icon">⚡</span>
+                </div>
+                <div class="card-value" id="stats-storage-status" style="font-size: 1.25rem; color: var(--green); padding: 4px 0;">Terhubung</div>
+                <div class="card-desc">Supabase Storage Bucket: gallery-images</div>
+            </div>
         </div>
+
+        <!-- SECTION 2: UPLOAD AREA -->
+        <div class="section-box">
+            <h2 class="section-title">📤 Unggah Album Galeri Baru</h2>
+            
+            <div class="upload-dropzone" id="gallery-dropzone">
+                <span class="upload-icon">🖼️</span>
+                <p class="upload-title">Seret & Letakkan Foto Di Sini</p>
+                <p class="upload-desc">Atau klik untuk memilih file dari perangkat Anda. Mendukung JPG, JPEG, PNG, dan WEBP (Maksimal 5MB per file).</p>
+                <input type="file" id="gallery-file-input" accept="image/jpeg,image/png,image/webp" multiple style="display: none;">
+            </div>
+            
+            <!-- Upload Queue Progress -->
+            <div class="upload-status-list" id="upload-status-list">
+                <!-- Status items will be injected dynamically here -->
+            </div>
+        </div>
+
+        <!-- SECTION 3: GALLERY GRID -->
+        <div class="section-box">
+            <h2 class="section-title">🖼️ Album Galeri Aktif</h2>
+            
+            <!-- Skeleton Loading State -->
+            <div class="gallery-grid" id="gallery-grid-skeleton">
+                <div class="skeleton-card">
+                    <div class="skeleton" style="width: 100%; aspect-ratio: 4/3; border-radius: var(--radius-sm);"></div>
+                    <div class="skeleton" style="width: 80%; height: 2.2rem;"></div>
+                    <div class="skeleton" style="width: 40%; height: 1rem; margin-top: auto;"></div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton" style="width: 100%; aspect-ratio: 4/3; border-radius: var(--radius-sm);"></div>
+                    <div class="skeleton" style="width: 80%; height: 2.2rem;"></div>
+                    <div class="skeleton" style="width: 40%; height: 1rem; margin-top: auto;"></div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton" style="width: 100%; aspect-ratio: 4/3; border-radius: var(--radius-sm);"></div>
+                    <div class="skeleton" style="width: 80%; height: 2.2rem;"></div>
+                    <div class="skeleton" style="width: 40%; height: 1rem; margin-top: auto;"></div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton" style="width: 100%; aspect-ratio: 4/3; border-radius: var(--radius-sm);"></div>
+                    <div class="skeleton" style="width: 80%; height: 2.2rem;"></div>
+                    <div class="skeleton" style="width: 40%; height: 1rem; margin-top: auto;"></div>
+                </div>
+            </div>
+
+            <!-- Active Grid -->
+            <div class="gallery-grid" id="gallery-grid-active" style="display: none;">
+                <!-- Gallery cards injected dynamically here -->
+            </div>
+            
+            <!-- Empty state -->
+            <div class="placeholder-container" id="gallery-empty-state" style="display: none;">
+                <span class="placeholder-icon">📸</span>
+                <h2 class="placeholder-title">Belum Ada Foto Terunggah</h2>
+                <p class="placeholder-desc">Galeri foto Anda masih kosong. Silakan unggah beberapa foto kenangan indah di atas untuk mempercantik undangan digital.</p>
+            </div>
+        </div>
+
+        <!-- SECTION 4: ACTIONS BAR -->
+        <div class="actions-bar" id="gallery-actions-bar">
+            <div class="actions-left">
+                <label class="bulk-checkbox-container" id="bulk-select-label" style="display: none;">
+                    <input type="checkbox" class="gallery-card-checkbox" id="chk-select-all">
+                    <span>Pilih Semua (<span id="selected-count">0</span>)</span>
+                </label>
+                <button type="button" class="btn btn-secondary btn-danger" id="btn-bulk-delete" disabled style="display: none;">
+                    🗑️ Hapus Terpilih
+                </button>
+            </div>
+            <div class="actions-right">
+                <button type="button" class="btn btn-secondary" id="btn-revert-order" disabled>
+                    Batal
+                </button>
+                <button type="button" class="btn btn-primary" id="btn-save-order" disabled>
+                    Simpan Urutan Galeri
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PREVIEW LIGHTBOX MODAL -->
+    <div class="lightbox-modal" id="lightbox-modal">
+        <button class="btn-lightbox close" id="btn-lightbox-close" title="Tutup">×</button>
+        <button class="btn-lightbox zoom" id="btn-lightbox-zoom" title="Perbesar / Perkecil">🔍</button>
+        <button class="btn-lightbox prev" id="btn-lightbox-prev" title="Sebelumnya">‹</button>
+        <button class="btn-lightbox next" id="btn-lightbox-next" title="Berikutnya">›</button>
+        
+        <div class="lightbox-content-wrapper">
+            <div class="lightbox-image-container">
+                <img src="" alt="" class="lightbox-img" id="lightbox-image">
+            </div>
+            <div class="lightbox-caption" id="lightbox-caption"></div>
+        </div>
+    </div>
+
+    <!-- Sticky Changes Banner notification -->
+    <div id="unsaved-changes-banner" class="unsaved-banner">
+        <div class="unsaved-banner-text">
+            <span>⚠️</span>
+            <span>Perubahan urutan atau judul galeri belum disimpan ke database</span>
+        </div>
+        <button type="button" id="btn-sticky-save" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.85rem;">
+            Simpan Perubahan
+        </button>
+    </div>
+
+    <!-- Notification Alert Toaster -->
+    <div class="toast" id="toast">
+        <span class="toast-icon" id="toast-icon">✓</span>
+        <span class="toast-message" id="toast-message">Pesan notifikasi</span>
     </div>
 
     <!-- Layout & Dynamic details bindings -->
     <script src="../js/services/authService.js"></script>
+    <script src="../js/services/storageService.js"></script>
+    
+    <!-- Gallery Components & Managers -->
+    <script src="../js/components/uploadZone.js"></script>
+    <script src="../js/components/galleryGrid.js"></script>
+    <script src="../js/components/imagePreviewModal.js"></script>
+    <script src="../js/components/dragDropManager.js"></script>
+    <script src="../js/components/bulkActionManager.js"></script>
+    
+    <!-- Gallery Service orchestrator -->
+    <script src="../js/services/galleryService.js"></script>
+    
+    <!-- Unified Dashboard Shell wrapper -->
     <script src="../js/components/dashboardShell.js"></script>
 </body>
 
