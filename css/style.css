@@ -1492,13 +1492,31 @@ body {
 
 .scroll-reveal {
     opacity: 0;
-    transform: translateY(50px);
-    transition: opacity 1s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform: translateY(80px) scale(0.96);
+    filter: blur(8px);
+    will-change: transform, opacity, filter;
+    transition: 
+        opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 1s cubic-bezier(0.16, 1, 0.3, 1),
+        filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-reveal.exit-down {
+    opacity: 0;
+    transform: translateY(80px) scale(0.96);
+    filter: blur(8px);
+}
+
+.scroll-reveal.exit-up {
+    opacity: 0;
+    transform: translateY(-80px) scale(0.96);
+    filter: blur(8px);
 }
 
 .scroll-reveal.revealed {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
+    filter: blur(0);
 }
 
 
