@@ -17,7 +17,7 @@
     // 2. Sidebar Navigation Items
     const menuItems = [
         { id: 'dashboard', label: 'Dashboard', url: './dashboard.html', icon: icons.dashboard },
-        { id: 'settings', label: 'Event Settings', url: './settings.html', icon: icons.settings },
+        { id: 'settings', label: 'Pengaturan Acara', url: './settings.html', icon: icons.settings },
         { id: 'hero', label: 'Hero Image', url: './hero.html', icon: icons.hero },
         { id: 'gallery', label: 'Gallery', url: './gallery.html', icon: icons.gallery },
         { id: 'music', label: 'Background Music', url: './music.html', icon: icons.music },
@@ -60,7 +60,7 @@
         // 3. Create Sidebar
         const sidebar = document.createElement('aside');
         sidebar.className = 'sidebar';
-        
+
         let menuHtml = '';
         menuItems.forEach(item => {
             const isActive = item.id === activeItem ? 'active' : '';
@@ -118,12 +118,12 @@
         // 6. Create Content Body and move the original content inside it
         const bodyContent = document.createElement('main');
         bodyContent.className = 'content-body';
-        
+
         // Move children of rootContent to bodyContent
         while (rootContent.firstChild) {
             bodyContent.appendChild(rootContent.firstChild);
         }
-        
+
         mainPanel.appendChild(bodyContent);
         wrapper.appendChild(mainPanel);
 
@@ -188,7 +188,7 @@
                 .join('')
                 .slice(0, 2)
                 .toUpperCase();
-            
+
             const avatarInitials = document.getElementById('avatar-initials');
             if (avatarInitials) avatarInitials.textContent = initials;
         } catch (e) {
