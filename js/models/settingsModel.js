@@ -22,6 +22,7 @@ class InvitationSettings {
         
         this.location_name = data.location_name || 'Kediaman Alfath';
         this.full_address = data.full_address || 'Jl. Melati No. 24, Cilandak Barat, Jakarta Selatan';
+        this.event_guide = data.event_guide || 'Acara diadakan di kediaman utama keluarga. Anda dapat memarkir kendaraan di area yang telah disediakan oleh petugas.';
         this.google_maps_url = data.google_maps_url || 'https://maps.google.com/?q=-6.2661555,106.7972412';
         this.whatsapp_number = data.whatsapp_number || '6281234567890';
         
@@ -93,6 +94,13 @@ const SettingsValidator = {
             errors.whatsapp_number = 'Nomor WhatsApp wajib diisi';
         } else if (!/^\d+$/.test(String(settings.whatsapp_number).trim())) {
             errors.whatsapp_number = 'Nomor WhatsApp hanya boleh berisi angka';
+        }
+
+        // event_guide: Required, Max 500 characters
+        if (!settings.event_guide || settings.event_guide.trim() === '') {
+            errors.event_guide = 'Petunjuk acara wajib diisi';
+        } else if (settings.event_guide.length > 500) {
+            errors.event_guide = 'Petunjuk acara maksimal 500 karakter';
         }
 
         // profile_full_name: Required if profile_enabled is true

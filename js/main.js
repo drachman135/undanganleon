@@ -307,6 +307,11 @@ function renderDynamicContent() {
         if (locVenueName) locVenueName.textContent = settings.location_name || 'Kediaman Alfath';
         const locAddress = document.querySelector('.location-address');
         if (locAddress) locAddress.textContent = settings.full_address || 'Jl. Melati No. 24, Jakarta Selatan';
+        
+        const locGuide = document.getElementById('event-display-guide');
+        if (locGuide && settings.event_guide) {
+            locGuide.textContent = settings.event_guide;
+        }
 
         const btnLocation = document.querySelector('.btn-location');
         if (btnLocation && settings.google_maps_url) {

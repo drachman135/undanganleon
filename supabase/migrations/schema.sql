@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS invitation_settings (
     theme_color VARCHAR(50) NOT NULL DEFAULT '#F97316',
     start_time VARCHAR(50) NOT NULL DEFAULT '15:00',
     end_time VARCHAR(50) NOT NULL DEFAULT 'Selesai',
+    event_guide TEXT NOT NULL DEFAULT 'Acara diadakan di kediaman utama keluarga. Anda dapat memarkir kendaraan di area yang telah disediakan oleh petugas.',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -260,7 +261,8 @@ INSERT INTO invitation_settings (
     loading_duration,
     theme_color,
     start_time,
-    end_time
+    end_time,
+    event_guide
 )
 VALUES (
     1, 
@@ -282,5 +284,6 @@ VALUES (
     3000,
     '#F97316',
     '15:00',
-    'Selesai'
+    'Selesai',
+    'Acara diadakan di kediaman utama keluarga. Anda dapat memarkir kendaraan di area yang telah disediakan oleh petugas.'
 ) ON CONFLICT (id) DO NOTHING;

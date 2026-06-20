@@ -48,6 +48,7 @@ const SettingsRepository = {
             event_time: `${settings.start_time} WIB - ${settings.end_time}`,
             location_name: settings.location_name,
             full_address: settings.full_address,
+            event_guide: settings.event_guide,
             google_maps_url: settings.google_maps_url,
             whatsapp_number: settings.whatsapp_number,
             music_enabled: settings.music_enabled,
