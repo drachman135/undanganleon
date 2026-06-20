@@ -11,6 +11,7 @@
         music: `<svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>`,
         guests: `<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`,
         rsvp: `<svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>`,
+        layout: `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="4" rx="1"></rect><rect x="3" y="10" width="18" height="4" rx="1"></rect><rect x="3" y="17" width="18" height="4" rx="1"></rect></svg>`,
         logout: `<svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>`
     };
 
@@ -18,6 +19,7 @@
     const menuItems = [
         { id: 'dashboard', label: 'Dashboard', url: './dashboard.html', icon: icons.dashboard },
         { id: 'settings', label: 'Pengaturan Acara', url: './settings.html', icon: icons.settings },
+        { id: 'layout', label: 'Tata Letak Website', url: './layout.html', icon: icons.layout },
         { id: 'hero', label: 'Gambar Hero', url: './hero.html', icon: icons.hero },
         { id: 'gallery', label: 'Galeri Foto', url: './gallery.html', icon: icons.gallery },
         { id: 'music', label: 'Musik Latar', url: './music.html', icon: icons.music },

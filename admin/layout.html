@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin — Tata Letak Website ⚙️</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Supabase Core + Config & Route Guard -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/middleware/authGuard.js"></script>
+    <script src="../js/middleware/errorBoundary.js"></script>
+    
+    <!-- Unified Dashboard CSS -->
+    <link rel="stylesheet" href="../css/dashboard.css">
+    
+    <style>
+        .layout-card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 24px;
+            max-width: 600px;
+        }
+        .layout-card-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+            user-select: none;
+        }
+        .layout-card-item:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .layout-card-item.dragging {
+            opacity: 0.5;
+            border-color: var(--orange);
+            box-shadow: 0 4px 20px rgba(249, 115, 22, 0.15);
+        }
+        .layout-card-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .layout-card-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        .layout-drag-handle {
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px;
+            color: var(--slate);
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        .layout-drag-handle:hover {
+            color: var(--text-color);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .layout-drag-handle:active {
+            cursor: grabbing;
+        }
+        /* Custom Modern Switch Toggle */
+        .layout-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .layout-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .layout-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: .3s;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+        }
+        .layout-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        input:checked + .layout-slider {
+            background-color: var(--orange);
+            border-color: var(--orange);
+        }
+        input:checked + .layout-slider:before {
+            transform: translateX(20px);
+        }
+        .desc-title {
+            color: var(--slate);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="dashboard-content">
+        <!-- Root node for React App -->
+        <div id="layout-app">
+            <!-- Skeleton Loader while React/DB loads -->
+            <div class="skeleton-container" style="padding: 20px 0;">
+                <div class="skeleton" style="height: 1.5rem; width: 40%; margin-bottom: 8px;"></div>
+                <div class="skeleton" style="height: 1rem; width: 60%; margin-bottom: 24px;"></div>
+                <div style="display: flex; flex-direction: column; gap: 12px; max-width: 600px;">
+                    <div class="skeleton" style="height: 60px; width: 100%; border-radius: var(--radius-md);"></div>
+                    <div class="skeleton" style="height: 60px; width: 100%; border-radius: var(--radius-md);"></div>
+                    <div class="skeleton" style="height: 60px; width: 100%; border-radius: var(--radius-md);"></div>
+                    <div class="skeleton" style="height: 60px; width: 100%; border-radius: var(--radius-md);"></div>
+                    <div class="skeleton" style="height: 60px; width: 100%; border-radius: var(--radius-md);"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts Layout & Security -->
+    <script src="../js/services/authService.js"></script>
+    <script src="../js/models/settingsModel.js"></script>
+    <script src="../js/repositories/settingsRepository.js"></script>
+    <script src="../js/components/dashboardShell.js"></script>
+
+    <!-- React App logic using native ES module imports from CDN -->
+    <script type="module">
+        import React, { useState, useEffect } from 'https://esm.sh/react@18.2.0';
+        import ReactDOM from 'https://esm.sh/react-dom@18.2.0/client';
+        import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from 'https://esm.sh/@dnd-kit/core@6.0.8';
+        import { arrayMove, SortableContext, verticalListSortingStrategy, useSortable } from 'https://esm.sh/@dnd-kit/sortable@7.0.11';
+        import { CSS } from 'https://esm.sh/@dnd-kit/utilities@3.2.1';
+        import htm from 'https://esm.sh/htm@3.1.1';
+
+        const html = htm.bind(React.createElement);
+
+        // Map internal keys to Indonesian names
+        const SECTION_NAMES = {
+            hero: 'Hero',
+            profile: 'Profil Anak',
+            countdown: 'Hitung Mundur',
+            gallery: 'Galeri',
+            location: 'Lokasi Acara',
+            rsvp: 'Konfirmasi Kehadiran',
+            footer: 'Footer'
+        };
+
+        // Sortable Item Component
+        function SortableItem({ id, section, onToggle }) {
+            const {
+                attributes,
+                listeners,
+                setNodeRef,
+                transform,
+                transition,
+                isDragging
+            } = useSortable({ id: id });
+
+            const style = {
+                transform: CSS.Transform.toString(transform),
+                transition: transition || undefined,
+            };
+
+            const className = `layout-card-item ${isDragging ? 'dragging' : ''}`;
+
+            return html`
+                <div ref=${setNodeRef} style=${style} className=${className}>
+                    <div className="layout-card-left">
+                        <label className="layout-switch">
+                            <input 
+                                type="checkbox" 
+                                checked=${section.enabled} 
+                                onChange=${() => onToggle(id)} 
+                            />
+                            <span className="layout-slider"></span>
+                        </label>
+                        <span className="layout-card-name">${SECTION_NAMES[id]}</span>
+                    </div>
+                    <div 
+                        className="layout-drag-handle" 
+                        ...${attributes} 
+                        ...${listeners}
+                        aria-label="Geser urutan"
+                    >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                            <line x1="4" y1="9" x2="20" y2="9"></line>
+                            <line x1="4" y1="15" x2="20" y2="15"></line>
+                        </svg>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Main App Component
+        function App() {
+            const [loading, setLoading] = useState(true);
+            const [originalSettings, setOriginalSettings] = useState(null);
+            const [sections, setSections] = useState([]);
+            const [saving, setSaving] = useState(false);
+            const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+            const [hasChanges, setHasChanges] = useState(false);
+
+            // Fetch settings on mount
+            useEffect(() => {
+                async function loadSettings() {
+                    try {
+                        const data = await SettingsRepository.getSettings();
+                        if (!data) throw new Error('Gagal memuat pengaturan.');
+                        setOriginalSettings(data);
+                        
+                        // Construct section objects based on DB settings
+                        const items = [
+                            { id: 'hero', enabled: !!data.hero_enabled, order: data.hero_order || 1 },
+                            { id: 'profile', enabled: !!data.profile_enabled, order: data.profile_order || 2 },
+                            { id: 'countdown', enabled: !!data.countdown_enabled, order: data.countdown_order || 3 },
+                            { id: 'gallery', enabled: !!data.gallery_enabled, order: data.gallery_order || 4 },
+                            { id: 'location', enabled: !!data.location_enabled, order: data.location_order || 5 },
+                            { id: 'rsvp', enabled: !!data.rsvp_enabled, order: data.rsvp_order || 6 },
+                            { id: 'footer', enabled: !!data.footer_enabled, order: data.footer_order || 7 }
+                        ];
+
+                        // Sort initially by database order
+                        items.sort((a, b) => a.order - b.order);
+                        setSections(items);
+                    } catch (err) {
+                        console.error(err);
+                        showNotification('Gagal memuat tata letak dari database.', 'error');
+                    } finally {
+                        setLoading(false);
+                    }
+                }
+                loadSettings();
+            }, []);
+
+            // Handle toggle visibility
+            const handleToggle = (id) => {
+                setSections(prev => {
+                    const next = prev.map(item => 
+                        item.id === id ? { ...item, enabled: !item.enabled } : item
+                    );
+                    setHasChanges(true);
+                    return next;
+                });
+            };
+
+            // Setup DnD Sensors (specifically pointer sensor)
+            const sensors = useSensors(
+                useSensor(PointerSensor, {
+                    activationConstraint: {
+                        distance: 5,
+                    },
+                })
+            );
+
+            // Handle Drag End
+            const handleDragEnd = (event) => {
+                const { active, over } = event;
+                if (!over || active.id === over.id) return;
+
+                setSections(items => {
+                    const oldIndex = items.findIndex(item => item.id === active.id);
+                    const newIndex = items.findIndex(item => item.id === over.id);
+                    const newItems = arrayMove(items, oldIndex, newIndex);
+                    
+                    // Re-calculate the orders
+                    const updatedItems = newItems.map((item, idx) => ({
+                        ...item,
+                        order: idx + 1
+                    }));
+
+                    setHasChanges(true);
+                    return updatedItems;
+                });
+            };
+
+            // Show Toast Notification
+            const showNotification = (message, type = 'success') => {
+                setToast({ show: true, message, type });
+                setTimeout(() => {
+                    setToast(prev => ({ ...prev, show: false }));
+                }, 3000);
+            };
+
+            // Save to DB
+            const handleSave = async (e) => {
+                if (e) e.preventDefault();
+                setSaving(true);
+                try {
+                    // Update settings values based on sections list
+                    const updatedData = { ...originalSettings };
+                    
+                    sections.forEach(item => {
+                        updatedData[`${item.id}_enabled`] = item.enabled;
+                        updatedData[`${item.id}_order`] = item.order;
+                    });
+
+                    // Save to Supabase using settingsRepository
+                    const response = await SettingsRepository.updateSettings(updatedData);
+                    setOriginalSettings(response);
+                    setHasChanges(false);
+                    showNotification('Perubahan berhasil disimpan', 'success');
+                } catch (err) {
+                    console.error(err);
+                    showNotification('Gagal menyimpan perubahan. Silakan coba lagi.', 'error');
+                } finally {
+                    setSaving(false);
+                }
+            };
+
+            if (loading) {
+                return html`
+                    <div className="skeleton-container" style=${{ padding: '20px 0' }}>
+                        <div className="skeleton" style=${{ height: '1.5rem', width: '40%', marginBottom: '8px' }}></div>
+                        <div className="skeleton" style=${{ height: '1rem', width: '60%', marginBottom: '24px' }}></div>
+                        <div style=${{ display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '600px' }}>
+                            <div className="skeleton" style=${{ height: '60px', width: '100%', borderRadius: 'var(--radius-md)' }}></div>
+                            <div className="skeleton" style=${{ height: '60px', width: '100%', borderRadius: 'var(--radius-md)' }}></div>
+                            <div className="skeleton" style=${{ height: '60px', width: '100%', borderRadius: 'var(--radius-md)' }}></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            return html`
+                <div>
+                    <h1 className="page-title" style=${{ marginBottom: '4px' }}>Tata Letak Website</h1>
+                    <p className="desc-title">Atur bagian mana yang ditampilkan pada website dan sesuaikan urutan tampilannya.</p>
+
+                    <form onSubmit=${handleSave}>
+                        <${DndContext} 
+                            sensors=${sensors} 
+                            collisionDetection=${closestCenter} 
+                            onDragEnd=${handleDragEnd}
+                        >
+                            <div className="layout-card-list">
+                                <${SortableContext} 
+                                    items=${sections} 
+                                    strategy=${verticalListSortingStrategy}
+                                >
+                                    ${sections.map(item => html`
+                                        <${SortableItem} 
+                                            key=${item.id} 
+                                            id=${item.id} 
+                                            section=${item} 
+                                            onToggle=${handleToggle} 
+                                        />
+                                    `)}
+                                </${SortableContext}>
+                            </div>
+                        </${DndContext}>
+
+                        <div style=${{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end', maxWidth: '600px' }}>
+                            <button 
+                                type="submit" 
+                                className="btn btn-primary" 
+                                style=${{ padding: '14px 40px' }} 
+                                disabled=${saving}
+                            >
+                                ${saving ? 'Menyimpan...' : 'Simpan Perubahan'}
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Custom Floating Unsaved Banner -->
+                    ${hasChanges && html`
+                        <div className="unsaved-banner show">
+                            <div className="unsaved-banner-text">
+                                <span>⚠️</span>
+                                <span>Perubahan belum disimpan</span>
+                            </div>
+                            <button onClick=${handleSave} className="btn btn-primary" style=${{ padding: '10px 20px', fontSize: '0.85rem' }} disabled=${saving}>
+                                ${saving ? 'Menyimpan...' : 'Simpan Perubahan'}
+                            </button>
+                        </div>
+                    `}
+
+                    <!-- Toast Notification -->
+                    <div className=${`toast ${toast.show ? 'show' : ''}`} style=${{ opacity: toast.show ? 1 : 0, transition: 'all 0.3s ease' }}>
+                        <span className="toast-icon">${toast.type === 'success' ? '✓' : '✗'}</span>
+                        <span className="toast-message">${toast.message}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Mount App
+        const root = ReactDOM.createRoot(document.getElementById('layout-app'));
+        root.render(React.createElement(App));
+    </script>
+</body>
+
+</html>

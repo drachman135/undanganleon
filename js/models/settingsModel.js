@@ -34,7 +34,7 @@ class InvitationSettings {
         this.loading_duration = typeof data.loading_duration === 'number' ? data.loading_duration : 3000;
         
         // Profile CMS Section
-        this.profile_enabled = data.profile_enabled !== undefined ? !!data.profile_enabled : false;
+        this.profile_enabled = data.profile_enabled !== undefined ? !!data.profile_enabled : true;
         this.profile_full_name = data.profile_full_name || '';
         this.profile_birth_place = data.profile_birth_place || '';
         this.profile_birth_date = data.profile_birth_date || '';
@@ -47,6 +47,22 @@ class InvitationSettings {
 
         // Theme
         this.theme_color = data.theme_color || '#F97316';
+
+        // Layout Settings
+        this.hero_enabled = data.hero_enabled !== undefined ? !!data.hero_enabled : true;
+        this.countdown_enabled = data.countdown_enabled !== undefined ? !!data.countdown_enabled : true;
+        this.gallery_enabled = data.gallery_enabled !== undefined ? !!data.gallery_enabled : true;
+        this.location_enabled = data.location_enabled !== undefined ? !!data.location_enabled : true;
+        this.rsvp_enabled = data.rsvp_enabled !== undefined ? !!data.rsvp_enabled : true;
+        this.footer_enabled = data.footer_enabled !== undefined ? !!data.footer_enabled : true;
+
+        this.hero_order = data.hero_order !== undefined ? parseInt(data.hero_order, 10) : 1;
+        this.profile_order = data.profile_order !== undefined ? parseInt(data.profile_order, 10) : 2;
+        this.countdown_order = data.countdown_order !== undefined ? parseInt(data.countdown_order, 10) : 3;
+        this.gallery_order = data.gallery_order !== undefined ? parseInt(data.gallery_order, 10) : 4;
+        this.location_order = data.location_order !== undefined ? parseInt(data.location_order, 10) : 5;
+        this.rsvp_order = data.rsvp_order !== undefined ? parseInt(data.rsvp_order, 10) : 6;
+        this.footer_order = data.footer_order !== undefined ? parseInt(data.footer_order, 10) : 7;
     }
 }
 
@@ -135,6 +151,17 @@ const SettingsValidator = {
                 errors.profile_full_name = 'Nama lengkap profil wajib diisi';
             }
         }
+
+        // Validate layout orders (must be integers)
+        const orderFields = ['hero_order', 'profile_order', 'countdown_order', 'gallery_order', 'location_order', 'rsvp_order', 'footer_order'];
+        orderFields.forEach(field => {
+            if (settings[field] !== undefined) {
+                const val = Number(settings[field]);
+                if (isNaN(val)) {
+                    errors[field] = 'Urutan harus berupa angka';
+                }
+            }
+        });
 
         return {
             isValid: Object.keys(errors).length === 0,

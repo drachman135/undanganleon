@@ -149,6 +149,72 @@ function renderDynamicContent() {
     // 2. Load & Override settings
     const settings = AppState.settings;
     if (settings) {
+        // Dynamic Section Layout Ordering & Visibility
+        const mainContainer = document.getElementById('main-invitation');
+        if (mainContainer) {
+            const sections = {
+                hero: document.getElementById('hero-section'),
+                profile: document.getElementById('profile-section'),
+                countdown: document.getElementById('countdown-section'),
+                gallery: document.getElementById('gallery-section'),
+                location: document.getElementById('location-section'),
+                rsvp: document.getElementById('rsvp-section'),
+                footer: document.getElementById('footer-section')
+            };
+            const detailsSec = document.getElementById('details-section');
+            const floatingMusicBtn = document.getElementById('floating-music-btn');
+
+            // Build list of sections with their database order and enabled status
+            const layoutList = [
+                { id: 'hero', el: sections.hero, enabled: settings.hero_enabled !== false, order: settings.hero_order || 1 },
+                { id: 'profile', el: sections.profile, enabled: settings.profile_enabled !== false, order: settings.profile_order || 2 },
+                { id: 'countdown', el: sections.countdown, enabled: settings.countdown_enabled !== false, order: settings.countdown_order || 3 },
+                { id: 'gallery', el: sections.gallery, enabled: settings.gallery_enabled !== false, order: settings.gallery_order || 4 },
+                { id: 'location', el: sections.location, enabled: settings.location_enabled !== false, order: settings.location_order || 5 },
+                { id: 'rsvp', el: sections.rsvp, enabled: settings.rsvp_enabled !== false, order: settings.rsvp_order || 6 },
+                { id: 'footer', el: sections.footer, enabled: settings.footer_enabled !== false, order: settings.footer_order || 7 }
+            ];
+
+            // Sort layoutList based on order
+            layoutList.sort((a, b) => a.order - b.order);
+
+            // Re-render elements inside main-invitation
+            layoutList.forEach(item => {
+                if (item.el) {
+                    if (item.enabled) {
+                        mainContainer.appendChild(item.el);
+                        // Make sure the inline style display is reset or set correctly
+                        if (item.id === 'profile') {
+                            if (settings.profile_enabled) {
+                                item.el.style.display = 'flex';
+                            }
+                        } else {
+                            item.el.style.display = '';
+                        }
+
+                        // Special coupling for details-section with countdown
+                        if (item.id === 'countdown') {
+                            if (detailsSec) {
+                                mainContainer.appendChild(detailsSec);
+                                detailsSec.style.display = '';
+                            }
+                        }
+                    } else {
+                        // Completely remove from DOM to satisfy "Bukan disembunyikan dengan CSS. Bagian harus benar-benar tidak dirender."
+                        item.el.remove();
+                        if (item.id === 'countdown' && detailsSec) {
+                            detailsSec.remove();
+                        }
+                    }
+                }
+            });
+
+            // Append back floating music button at the very end if it exists
+            if (floatingMusicBtn) {
+                mainContainer.appendChild(floatingMusicBtn);
+            }
+        }
+
         if (settings.child_name) {
             CHILD_NAME = settings.child_name;
         }

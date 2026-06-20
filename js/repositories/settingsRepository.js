@@ -67,6 +67,19 @@ const SettingsRepository = {
             profile_avatar_url: settings.profile_avatar_url,
             gallery_title: settings.gallery_title,
             gallery_subtitle: settings.gallery_subtitle,
+            hero_enabled: settings.hero_enabled,
+            countdown_enabled: settings.countdown_enabled,
+            gallery_enabled: settings.gallery_enabled,
+            location_enabled: settings.location_enabled,
+            rsvp_enabled: settings.rsvp_enabled,
+            footer_enabled: settings.footer_enabled,
+            hero_order: parseInt(settings.hero_order, 10),
+            profile_order: parseInt(settings.profile_order, 10),
+            countdown_order: parseInt(settings.countdown_order, 10),
+            gallery_order: parseInt(settings.gallery_order, 10),
+            location_order: parseInt(settings.location_order, 10),
+            rsvp_order: parseInt(settings.rsvp_order, 10),
+            footer_order: parseInt(settings.footer_order, 10),
             updated_at: new Date().toISOString()
         };
 
