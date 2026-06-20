@@ -339,6 +339,16 @@ body {
     color: var(--slate);
 }
 
+a.card {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a.card:hover .card-title {
+    color: var(--orange);
+    transition: color 0.2s ease;
+}
+
 /* ────────────────────────────────────────
    PLACEHOLDER PAGES ("COMING SOON")
    ──────────────────────────────────────── */

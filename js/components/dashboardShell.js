@@ -34,11 +34,12 @@
         const rootContent = document.getElementById('dashboard-content');
         if (!rootContent) return;
 
-        // Determine active item based on current page filename
-        const path = window.location.pathname;
+        // Determine active item based on current page filename (supports Clean URLs & local filenames)
+        const path = window.location.pathname.toLowerCase();
         let activeItem = 'dashboard';
         menuItems.forEach(item => {
-            if (path.includes(item.url.replace('./', ''))) {
+            const pageName = item.url.replace('./', '').replace('.html', '').toLowerCase();
+            if (path.includes('/' + pageName) || path.includes(pageName + '.html')) {
                 activeItem = item.id;
             }
         });
