@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin — Manajemen Tamu 👥</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Supabase Core + Config & Route Guard -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/middleware/authGuard.js"></script>
+    
+    <!-- Unified Dashboard CSS -->
+    <link rel="stylesheet" href="../css/dashboard.css">
+    
+    <style>
+        /* Custom styles for Guest management */
+        .action-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .search-wrapper {
+            position: relative;
+            max-width: 320px;
+            width: 100%;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--slate);
+            font-size: 0.95rem;
+            pointer-events: none;
+        }
+        
+        .search-input {
+            padding-left: 38px !important;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 12px;
+        }
+        
+        /* Table Layout Styling */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        
+        th {
+            background-color: rgba(15, 23, 42, 0.4);
+            border-bottom: 1px solid var(--border-color);
+            color: var(--slate);
+            font-weight: 600;
+            padding: 16px 20px;
+            font-family: 'Poppins', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--white);
+            vertical-align: middle;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover td {
+            background-color: rgba(255, 255, 255, 0.01);
+        }
+        
+        .guest-link-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 280px;
+        }
+        
+        .link-text-truncate {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--sky);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+        
+        .link-text-truncate:hover {
+            color: var(--white);
+            text-decoration: underline;
+        }
+        
+        .btn-action-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            color: var(--slate);
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-action-icon:hover {
+            background-color: rgba(255, 255, 255, 0.06);
+            color: var(--white);
+        }
+        
+        .btn-action-icon.btn-delete:hover {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #FCA5A5;
+        }
+        
+        .btn-action-icon.btn-copy:hover {
+            background-color: rgba(249, 115, 22, 0.15);
+            color: var(--gold);
+        }
+        
+        /* Mobile Card list view layout */
+        .mobile-card-list {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .mobile-guest-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mobile-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        
+        .mobile-guest-name {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--white);
+        }
+        
+        .mobile-guest-slug {
+            font-size: 0.75rem;
+            color: var(--slate);
+            margin-top: 2px;
+        }
+        
+        .mobile-card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .mobile-card-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .mobile-row-label {
+            font-size: 0.7rem;
+            color: var(--slate);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        
+        .mobile-card-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+            margin-top: 4px;
+        }
+        
+        /* Responsive break logic */
+        @media (max-width: 768px) {
+            .table-responsive {
+                display: none;
+            }
+            .mobile-card-list {
+                display: flex;
+            }
+        }
+        
+        /* Modal Window Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(11, 15, 25, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            padding: 20px;
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .modal-window {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.show .modal-window {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1.15rem;
+            color: var(--white);
+        }
+        
+        .btn-modal-close {
+            background: none;
+            border: none;
+            color: var(--slate);
+            font-size: 1.5rem;
+            cursor: pointer;
+            line-height: 1;
+            transition: var(--transition);
+        }
+        
+        .btn-modal-close:hover {
+            color: var(--white);
+        }
+        
+        .modal-body {
+            padding: 24px;
+        }
+        
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            background-color: rgba(15, 23, 42, 0.2);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        /* Bulk Import expandable panel styles */
+        .import-expandable-panel {
+            display: none;
+            margin-bottom: 24px;
+        }
+        
+        .import-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 24px;
+        }
+        
+        @media (max-width: 768px) {
+            .import-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .import-dropzone {
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            border-radius: var(--radius-md);
+            padding: 30px 16px;
+            text-align: center;
+            cursor: pointer;
+            background-color: rgba(15, 23, 42, 0.3);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .import-dropzone:hover, 
+        .import-dropzone.dragover {
+            border-color: var(--orange);
+            background-color: rgba(249, 115, 22, 0.05);
+        }
+        
+        .import-icon {
+            font-size: 2.2rem;
+        }
+        
+        /* Summary panel styling */
+        .summary-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .summary-badge {
+            background-color: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .summary-val {
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        
+        .summary-val.success-val { color: var(--green); }
+        .summary-val.failed-val { color: var(--red); }
+        .summary-val.duplicate-val { color: var(--gold); }
+    </style>
+</head>
+
+<body>
+    <div id="dashboard-content">
+        <!-- SECTION 1: GUEST STATISTICS -->
+        <div class="stats-grid" id="guests-stats-panel">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Total Tamu</span>
+                    <span class="card-icon">👥</span>
+                </div>
+                <div class="card-value" id="stats-total-guests">-</div>
+                <div class="card-desc">Tamu terdaftar di database</div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Baru Minggu Ini</span>
+                    <span class="card-icon">🆕</span>
+                </div>
+                <div class="card-value" id="stats-new-guests">-</div>
+                <div class="card-desc">Ditambahkan dalam 7 hari terakhir</div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Tautan Dibuat</span>
+                    <span class="card-icon">🔗</span>
+                </div>
+                <div class="card-value" id="stats-generated-links">-</div>
+                <div class="card-desc">Tautan undangan personal aktif</div>
+            </div>
+        </div>
+
+        <!-- ACTION HEADER -->
+        <div class="action-header">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="input-search-guest" class="form-input search-input" placeholder="Cari nama atau slug...">
+            </div>
+            
+            <div class="button-group">
+                <button type="button" class="btn btn-secondary" id="btn-toggle-import-panel">
+                    📥 Impor Massal
+                </button>
+                <button type="button" class="btn btn-primary" id="btn-open-add-modal">
+                    ＋ Tambah Tamu
+                </button>
+            </div>
+        </div>
+
+        <!-- BULK IMPORT EXPANDABLE PANEL -->
+        <div class="section-box import-expandable-panel" id="import-expandable-panel">
+            <h2 class="section-title">📥 Impor Tamu Secara Massal</h2>
+            
+            <div class="import-grid">
+                <!-- Left Column: File Dropzone -->
+                <div style="display: flex; flex-direction: column; gap: 14px;">
+                    <label class="form-label">Pilih Berkas Impor (CSV / TXT)</label>
+                    <div class="import-dropzone" id="import-dropzone">
+                        <span class="import-icon">📄</span>
+                        <p class="audio-drop-title">Unggah file CSV atau TXT</p>
+                        <p class="audio-drop-desc">Satu nama tamu per baris pada berkas</p>
+                        <input type="file" id="import-file-input" accept=".csv,.txt" style="display: none;">
+                    </div>
+                    
+                    <div class="drop-subtext">
+                        💡 **Format File:** File teks sederhana (.txt) dengan satu nama per baris, atau file CSV dengan kolom nama tamu.
+                    </div>
+                </div>
+                
+                <!-- Right Column: Paste List area -->
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <label for="import-paste-area" class="form-label">Tempel Daftar Nama Tamu</label>
+                    <textarea id="import-paste-area" rows="6" class="form-input" placeholder="Budi Santoso&#10;Andi Wijaya&#10;Siti Nurhaliza" style="resize: vertical; font-family: inherit; font-size: 0.9rem;"></textarea>
+                    
+                    <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 4px;">
+                        <button type="button" class="btn btn-secondary" id="btn-clear-import" style="padding: 10px 20px; font-size: 0.85rem;">
+                            Bersihkan
+                        </button>
+                        <button type="button" class="btn btn-primary" id="btn-process-import" style="padding: 10px 24px; font-size: 0.85rem;">
+                            Proses Impor Tamu
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Summary import result box -->
+            <div class="section-box" id="import-summary-box" style="display: none; margin-top: 24px; padding: 20px; background-color: rgba(255, 255, 255, 0.02); margin-bottom: 0;">
+                <h3 style="font-size: 0.9rem; font-weight: 600; color: var(--white); margin-bottom: 12px; font-family: 'Poppins', sans-serif;">Hasil Ringkasan Impor</h3>
+                <div class="summary-box">
+                    <span class="summary-badge">Total Diimpor: <span class="summary-val" id="summary-total">0</span></span>
+                    <span class="summary-badge">Sukses: <span class="summary-val success-val" id="summary-success">0</span></span>
+                    <span class="summary-badge">Gagal: <span class="summary-val failed-val" id="summary-failed">0</span></span>
+                    <span class="summary-badge">Duplikat: <span class="summary-val duplicate-val" id="summary-duplicates">0</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: GUEST LIST (TABLE / MOBILE LIST) -->
+        <div class="section-box">
+            <h2 class="section-title">📋 Daftar Undangan Aktif</h2>
+            
+            <!-- Skeleton Loader -->
+            <div id="guests-skeleton-loader" style="padding: 10px 0;">
+                <div class="skeleton" style="height: 2.8rem; width: 100%; margin-bottom: 12px;"></div>
+                <div class="skeleton" style="height: 3.5rem; width: 100%; margin-bottom: 8px;"></div>
+                <div class="skeleton" style="height: 3.5rem; width: 100%; margin-bottom: 8px;"></div>
+                <div class="skeleton" style="height: 3.5rem; width: 100%; margin-bottom: 8px;"></div>
+                <div class="skeleton" style="height: 3.5rem; width: 100%;"></div>
+            </div>
+            
+            <!-- Desktop Layout Table -->
+            <div class="table-responsive" id="guests-desktop-container" style="display: none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama Tamu</th>
+                            <th>Slug URL</th>
+                            <th>Tautan Undangan</th>
+                            <th>Tanggal Dibuat</th>
+                            <th style="text-align: right; width: 150px;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="guests-table-body">
+                        <!-- Table rows injected dynamically -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Mobile Layout Card List -->
+            <div class="mobile-card-list" id="guests-mobile-container" style="display: none;">
+                <!-- Mobile guest cards injected dynamically -->
+            </div>
+            
+            <!-- Empty state -->
+            <div class="placeholder-container" id="guests-empty-state" style="display: none;">
+                <span class="placeholder-icon">👥</span>
+                <h2 class="placeholder-title">Belum Ada Tamu Terdaftar</h2>
+                <p class="placeholder-desc">Silakan tambahkan tamu secara individual atau impor massal nama tamu di atas untuk mulai membuat tautan undangan personal.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL POPUP FORM: ADD / EDIT GUEST -->
+    <div class="modal-overlay" id="guest-form-modal">
+        <div class="modal-window">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-form-title">Tambah Tamu Undangan</h3>
+                <button type="button" class="btn-modal-close" id="btn-modal-close-form">×</button>
+            </div>
+            
+            <form id="guest-submit-form" novalidate>
+                <div class="modal-body">
+                    <!-- Hidden field ID -->
+                    <input type="hidden" id="form-guest-id">
+                    
+                    <!-- Guest Name Field -->
+                    <div class="form-group">
+                        <label for="form-guest-name">Nama Lengkap Tamu</label>
+                        <input type="text" id="form-guest-name" class="form-input" placeholder="Masukkan nama tamu, contoh: Budi Santoso" required>
+                        <span class="error-msg" id="form-guest-name-error">Nama tidak boleh kosong</span>
+                    </div>
+                    
+                    <!-- Slug Field (Editable, auto-generated on name change) -->
+                    <div class="form-group" style="margin-top: 16px;">
+                        <label for="form-guest-slug">Slug Tautan (Otomatis)</label>
+                        <input type="text" id="form-guest-slug" class="form-input" placeholder="contoh: budi-santoso" required>
+                        <span class="drop-subtext">Akan digunakan pada tautan akhir: `?to=slug`</span>
+                        <span class="error-msg" id="form-guest-slug-error">Slug tidak boleh kosong</span>
+                    </div>
+                    
+                    <!-- Preview URL -->
+                    <div class="form-group" style="margin-top: 16px;">
+                        <label>Pratinjau Tautan</label>
+                        <input type="text" id="form-guest-url-preview" class="form-input" style="background-color: rgba(15, 23, 42, 0.2); color: var(--slate);" readonly disabled value="-">
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btn-modal-cancel-form" style="padding: 10px 20px;">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="btn-modal-save-form" style="padding: 10px 24px;">
+                        Simpan Tamu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Alert Toaster -->
+    <div class="toast" id="toast">
+        <span class="toast-icon" id="toast-icon">✓</span>
+        <span class="toast-message" id="toast-message">Pesan notifikasi</span>
+    </div>
+
+    <!-- Scripts API & Route Guard -->
+    <script src="../js/services/authService.js"></script>
+    
+    <!-- Data repositories -->
+    <script src="../js/repositories/guestRepository.js"></script>
+    
+    <!-- Components & Managers -->
+    <script src="../js/components/linkGenerator.js"></script>
+    <script src="../js/components/guestTable.js"></script>
+    <script src="../js/components/guestForm.js"></script>
+    <script src="../js/components/importManager.js"></script>
+    <script src="../js/components/statisticsPanel.js"></script>
+    
+    <!-- Core Service Orchestrator -->
+    <script src="../js/services/guestService.js"></script>
+    
+    <!-- Unified Dashboard Shell wrapper -->
+    <script src="../js/components/dashboardShell.js"></script>
+</body>
+
+</html>
