@@ -63,10 +63,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 6px;
+            padding: 12px 16px;
             color: var(--slate);
-            border-radius: 4px;
+            border-radius: 6px;
             transition: all 0.2s ease;
+            touch-action: none;
         }
         .layout-drag-handle:hover {
             color: var(--text-color);
@@ -210,7 +211,7 @@
                         ...${dragProps} 
                         aria-label="Geser urutan"
                     >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                             <line x1="4" y1="9" x2="20" y2="9"></line>
                             <line x1="4" y1="15" x2="20" y2="15"></line>
                         </svg>
