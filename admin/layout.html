@@ -190,6 +190,7 @@
             };
 
             const className = `layout-card-item ${isDragging ? 'dragging' : ''}`;
+            const dragProps = { ...attributes, ...listeners };
 
             return html`
                 <div ref=${setNodeRef} style=${style} className=${className}>
@@ -206,8 +207,7 @@
                     </div>
                     <div 
                         className="layout-drag-handle" 
-                        ...${attributes} 
-                        ...${listeners}
+                        ...${dragProps} 
                         aria-label="Geser urutan"
                     >
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -362,7 +362,7 @@
                         >
                             <div className="layout-card-list">
                                 <${SortableContext} 
-                                    items=${sections} 
+                                    items=${sections.map(s => s.id)} 
                                     strategy=${verticalListSortingStrategy}
                                 >
                                     ${sections.map(item => html`
